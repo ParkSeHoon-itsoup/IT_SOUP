@@ -59,8 +59,28 @@ public class UserDAO {
                                         
                     return pstmt.executeUpdate();
                 } catch(Exception e) {
-                    e.printStackTrace();
+                    System.out.println("회원가입 실패 : " + e);
                 }
+        return -1;
+    }
+    
+    public int chkID(String id) {
+        int cnt = 0;
+        String SQL = "SELECT COUNT(ID) FROM TB_EMP WHERE ID = ?";
+        
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(SQL);
+            pstmt.setString(1, id);
+            
+            rs = pstmt.executeQuery();
+            
+            if(rs.next()) {
+                cnt = rs.getInt(1);
+                return cnt;
+            }
+        } catch(Exception e) {
+            System.out.println("아이디 중복 확인 실패 : " + e);
+        }
         return -1;
     }
 }

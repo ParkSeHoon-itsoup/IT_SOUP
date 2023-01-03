@@ -14,16 +14,16 @@ import DAO.UserDAO;
 
 @WebServlet("/joinController")
 public class joinController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    
-	    //UTF-8 인코딩
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        //UTF-8 인코딩
         request.setCharacterEncoding("utf-8");
         response.setContentType("text/html; charset=utf-8");
         response.setCharacterEncoding("utf-8");
         
-	    String ID= request.getParameter("ID");
+        String ID= request.getParameter("ID");
         String PASSWORD= request.getParameter("PASSWORD");
         String NAME= request.getParameter("NAME");
         String SSN= request.getParameter("SSN");
@@ -39,28 +39,48 @@ public class joinController extends HttpServlet {
         userDTO.setHPNO(HPNO);
         userDTO.setADDR(ADDR);
         userDTO.setEMAIL(EMAIL);
-        
+
+        PrintWriter script = response.getWriter();
+
         if(null == ID || "".equals(ID)) {
-            PrintWriter script = response.getWriter();
             script.println("<script>");
             script.println("alert('아이디는 필수 입력 사항입니다.')>");
             script.println("history.back()");
             script.println("</script>");
         } else if(null == PASSWORD || "".equals(PASSWORD)) {
-            PrintWriter script = response.getWriter();
             script.println("<script>");
             script.println("alert('비밀번호는 필수 입력 사항입니다.')>");
             script.println("history.back()");
             script.println("</script>");
-        } else {
+        } else if((null != ID || !"".equals(ID)) && (ID.length() <4)){
+            script.println("<script>");
+            script.println("alert('아이디는 4글자 이상이어야 합니다.')>");
+            script.println("history.back()");
+            script.println("</script>");
+        } else if((null != ID || !"".equals(ID)) && (ID.length() > 4)){
             UserDAO userDAO = new UserDAO();
-            int result = userDAO.join(userDTO);
             
-            if(result ==-1) {
-                System.out.println("회원가입실패");
+            int result = userDAO.chkID(ID);
+                        
+            if(result == 0) {
+                System.out.println("사용 가능한 ID 입니다.");
+                
+                UserDAO userDAO2 = new UserDAO();
+                
+                int result2 = userDAO.join(userDTO);
+                
+                if(result2 ==-1) {
+                    System.out.println("회원가입실패");
+                } else {
+                    System.out.println("회원가입성공");
+                }
             } else {
-                System.out.println("회원가입성공");
-            }
+                script.println("<script>");
+                script.println("alert('이미 사용중인 아이디 입니다.')>");
+                script.println("history.back()");
+                script.println("</script>");
+            } 
+        } else {
         }
-	}
+    }
 }
