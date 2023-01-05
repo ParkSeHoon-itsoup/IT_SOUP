@@ -3,6 +3,7 @@ package Controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,9 +27,9 @@ public class joinController extends HttpServlet {
         String ID= request.getParameter("ID");
         String PASSWORD= request.getParameter("PASSWORD");
         String NAME= request.getParameter("NAME");
-        String SSN= request.getParameter("SSN");
-        String HPNO= request.getParameter("HPNO");
-        String ADDR= request.getParameter("ADDR");
+        String SSN= request.getParameter("SSN1") + request.getParameter("SSN2") ;
+        String HPNO= request.getParameter("HPNO1") + request.getParameter("HPNO2") + request.getParameter("HPNO3");
+        String ADDR= request.getParameter("ADDR1") + ", " + request.getParameter("ADDR2");
         String EMAIL= request.getParameter("EMAIL");
         
         UserDTO userDTO = new UserDTO();
@@ -67,11 +68,13 @@ public class joinController extends HttpServlet {
                 
                 UserDAO userDAO2 = new UserDAO();
                 
-                int result2 = userDAO.join(userDTO);
+                int result2 = userDAO2.join(userDTO);
                 
                 if(result2 ==-1) {
                     System.out.println("회원가입실패");
                 } else {
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("main.jsp");
+                    dispatcher.forward(request, response);
                     System.out.println("회원가입성공");
                 }
             } else {

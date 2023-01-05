@@ -19,17 +19,17 @@ public class UserDTO {
     
     public UserDTO(int NO, String ID, String PASSWORD, String NAME, String HPNO, String SSN, String EMAIL, String GRADE_CD, String LEVEL,String CHG_PW_YN, String ADDR) {
         super();
-        UserDTO. NO = NO ;
-        UserDTO. ID = ID ;
-        UserDTO. PASSWORD =  PASSWORD;
-        UserDTO. NAME = NAME ;
-        UserDTO. HPNO = HPNO ;
+        UserDTO.NO = NO ;
+        UserDTO.ID = ID ;
+        UserDTO.PASSWORD =  PASSWORD;
+        UserDTO.NAME = NAME ;
+        UserDTO.HPNO = HPNO ;
         UserDTO.SSN = SSN ;
-        UserDTO. EMAIL = EMAIL ;
-        UserDTO. GRADE_CD = GRADE_CD ;
-        UserDTO. LEVEL = LEVEL;
-        UserDTO. CHG_PW_YN =  CHG_PW_YN;
-        UserDTO. ADDR =  ADDR;
+        UserDTO.EMAIL = EMAIL ;
+        UserDTO.GRADE_CD = GRADE_CD ;
+        UserDTO.LEVEL = LEVEL;
+        UserDTO.CHG_PW_YN =  CHG_PW_YN;
+        UserDTO.ADDR =  ADDR;
     }
 
     public int getNO() {
