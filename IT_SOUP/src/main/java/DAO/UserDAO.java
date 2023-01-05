@@ -23,38 +23,24 @@ public class UserDAO {
         }
     }
     
-    public int getNo() {
-        String SQL = "SELECT NO FROM TB_EMP WHERE NO = (SELECT MAX(NO) FROM TB_EMP A WHERE NO = A.NO)";
-        
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(SQL);
-            rs = pstmt.executeQuery();
-            
-            if(rs.next()) {
-                return rs.getInt(1);
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
-    
     public int join(UserDTO userDTO) {
-        String SQL = "INSERT INTO TB_EMP (NO , ID , PASSWORD , NAME, HPNO, SSN, EMAIL, LEVEL, CHG_PW_YN, ADDR) VALUES (?, ?, hex(aes_encrypt(?, 'PASSWORD')), ?, ?, hex(aes_encrypt(?, 'SSN')), ?, ?, ?, ?)";
+        String SQL = "INSERT INTO TB_EMP (NO, ID, PASSWORD, NAME, HPNO, SSN, EMAIL, LEVEL, CHG_PW_YN, ADDR, ADDR2, JOIN_DD) VALUES  ((SELECT IFNULL(MAX(NO) + 1, 1) FROM TB_EMP B), TRIM(?), TRIM(hex(aes_encrypt(?, 'PASSWORD')))"
+                + "                                                                                                                                                                                                                                                , TRIM(?), TRIM(?), TRIM(hex(aes_encrypt(?, 'SSN'))), TRIM(?), TRIM(?), TRIM(?), TRIM(?), TRIM(?), TRIM(?))";
                 
                 try {
                     PreparedStatement pstmt = conn.prepareStatement(SQL);
                                                             
-                    pstmt.setInt(1, getNo() + 1);
-                    pstmt.setString(2, userDTO.getID());
-                    pstmt.setString(3, userDTO.getPASSWORD());
-                    pstmt.setString(4, userDTO.getNAME());
-                    pstmt.setString(5, userDTO.getHPNO());
-                    pstmt.setString(6, userDTO.getSSN());
-                    pstmt.setString(7, userDTO.getEMAIL());
-                    pstmt.setString(8, "3");
-                    pstmt.setString(9, "N");
-                    pstmt.setString(10, userDTO.getADDR());
+                    pstmt.setString(1, userDTO.getID());
+                    pstmt.setString(2, userDTO.getPASSWORD());
+                    pstmt.setString(3, userDTO.getNAME());
+                    pstmt.setString(4, userDTO.getHPNO());
+                    pstmt.setString(5, userDTO.getSSN());
+                    pstmt.setString(6, userDTO.getEMAIL());
+                    pstmt.setString(7, "03");
+                    pstmt.setString(8, "N");
+                    pstmt.setString(9, userDTO.getADDR());
+                    pstmt.setString(10, userDTO.getADDR2());
+                    pstmt.setString(11, userDTO.getJOIN_DD());
                                         
                     return pstmt.executeUpdate();
                 } catch(Exception e) {

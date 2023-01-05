@@ -22,7 +22,7 @@ public class FindDAO {
     }
     
     public String find(String name, String ssn) {
-        String SQL = "SELECT ID FROM TB_EMP WHERE NAME = ? AND convert(AES_DECRYPT(unhex(SSN), 'SSN') using UTF8) = ?";
+        String SQL = "SELECT ID FROM TB_EMP WHERE NAME = ? AND convert(AES_DECRYPT(unhex(SSN), 'SSN') using UTF8) = trim(?)";
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);

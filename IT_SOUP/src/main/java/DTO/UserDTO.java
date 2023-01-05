@@ -12,12 +12,15 @@ public class UserDTO {
     private static String LEVEL;
     private static String CHG_PW_YN;
     private static String ADDR;
+    private static String ADDR2;
+    private static String JOIN_DD;;
+    private static String MOD_DD;
     
     public UserDTO(){
         super();
     }
     
-    public UserDTO(int NO, String ID, String PASSWORD, String NAME, String HPNO, String SSN, String EMAIL, String GRADE_CD, String LEVEL,String CHG_PW_YN, String ADDR) {
+    public UserDTO(int NO, String ID, String PASSWORD, String NAME, String HPNO, String SSN, String EMAIL, String GRADE_CD, String LEVEL,String CHG_PW_YN, String ADDR, String ADDR2, String JOIN_DD, String MOD_DD) {
         super();
         UserDTO.NO = NO ;
         UserDTO.ID = ID ;
@@ -30,6 +33,33 @@ public class UserDTO {
         UserDTO.LEVEL = LEVEL;
         UserDTO.CHG_PW_YN =  CHG_PW_YN;
         UserDTO.ADDR =  ADDR;
+        UserDTO.ADDR2 = ADDR2;
+        UserDTO.JOIN_DD = JOIN_DD;
+        UserDTO.MOD_DD = MOD_DD;
+    }
+
+    public static String getADDR2() {
+        return ADDR2;
+    }
+
+    public static void setADDR2(String aDDR2) {
+        ADDR2 = aDDR2;
+    }
+
+    public static String getJOIN_DD() {
+        return JOIN_DD;
+    }
+
+    public static void setJOIN_DD(String jOIN_DD) {
+        JOIN_DD = jOIN_DD;
+    }
+
+    public static String getMOD_DD() {
+        return MOD_DD;
+    }
+
+    public static void setMOD_DD(String mOD_DD) {
+        MOD_DD = mOD_DD;
     }
 
     public int getNO() {

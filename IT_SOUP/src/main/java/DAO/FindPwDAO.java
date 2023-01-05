@@ -32,7 +32,7 @@ public class FindPwDAO{
     }
     
     public String findPw(String Id, String Email) {
-        String SQL = "SELECT convert(AES_DECRYPT(unhex(PASSWORD), 'PASSWORD') using UTF8) AS PASSWORD FROM TB_EMP WHERE ID = ? AND EMAIL = ?";
+        String SQL = "SELECT convert(AES_DECRYPT(unhex(PASSWORD), 'PASSWORD') using UTF8) AS PASSWORD FROM TB_EMP WHERE ID = trim(?) AND EMAIL = trim(?)";
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
@@ -73,7 +73,7 @@ public class FindPwDAO{
     }
     
     public int updateTmpPw(String tmpPw, String Id, String Email) {
-        String SQL = "UPDATE TB_EMP SET PASWORD = ? WHERE ID = ? AND EMAIL = ?;";
+        String SQL = "UPDATE TB_EMP SET PASSWORD = ? WHERE ID = ? AND EMAIL = trim(?)";
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
@@ -89,7 +89,7 @@ public class FindPwDAO{
         return -1;
     }
     
-    public int sendMail(String tmpPw) {
+    public int sendMail() {
         String host = "smtp.naver.com";
         String user = "chulgisibjo@naver.com";
         String password = "ttff~~7546";
@@ -114,7 +114,7 @@ public class FindPwDAO{
             message.setSubject("임시비밀번호가 발급되었습니다.");
             
             //메일 내용
-            message.setText(password);
+            message.setText("제목");
             
             Transport.send(message);
             

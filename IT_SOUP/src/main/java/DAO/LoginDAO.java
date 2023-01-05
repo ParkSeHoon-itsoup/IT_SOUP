@@ -44,7 +44,7 @@ public class LoginDAO {
     }
     
     public String naming(String string) {
-        String SQL = "SELECT NAME, ID FROM TB_EMP WHERE ID = ?";
+        String SQL = "SELECT NAME, ID FROM TB_EMP WHERE ID = trim(?)";
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);

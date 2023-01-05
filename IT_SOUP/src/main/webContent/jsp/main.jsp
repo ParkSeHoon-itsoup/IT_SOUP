@@ -14,7 +14,8 @@
 function check(){
   var getCheck= RegExp(/^[a-zA-Z0-9]{4,20}$/);
   var getName= RegExp(/^[가-힣]{2,}$/);
-  var getPassword = $("#password").val();
+  var getPassword1 = $("#password1").val();
+  var getPassword2 = $("#password2").val();
   var getHpno = $("#hpno1").val() + $("#hpno2").val() + $("#hpno2").val();
   var getSsn = $("#ssn1").val() + $("#ssn2").val();
   var getCheckHpno1 = RegExp(/^010$/);
@@ -26,42 +27,52 @@ function check(){
    
   //아이디 유효성검사
   if(!getCheck.test($("#id").val())){
-    alert("4~20 사이의 영어 대소문자, 숫자만 입력가능합니다.");
+    alert("[아이디] 4~20 사이의 영어 대소문자, 숫자만 입력가능합니다.");
     $("#id").val("");
     $("#id").focus();
     return false;
   }
   
   //비밀번호 유효성 검사
-  if(getPassword.length < 6){
-      alert("비밀번호는 최소 6자리입니다.");
+  if(getPassword1.length < 6){
+      alert("[비밀번호] 비밀번호는 최소 6자리입니다.");
+      $("#password1").val("");
+      $("#password1").focus();
       return false;
   }
 
+  //비밀번호 재확인
+  if(getPassword1 != getPassword2){
+      alert("[비밀번호 재획인] 처음 입력된 비밀번호와 다릅니다.");
+      $("#password2").val("");
+      $("#password2").focus();
+      return false;
+  }
   
   //이름 유효성 검사
   if($("#name").val().length == 0){
-	  alert("이름은 필수 입력 사항입니다.");
-	  $("#name").focus();
-	  return false;
+      alert("[이름] 이름은 필수 입력 사항입니다.");
+      $("#name").focus();
+      return false;
+      
   } else if(!getName.test($("#name").val())){
-	  alert("2글자 이상의 한글만 입력가능합니다.");
-	  $("#name").val("");
-	  $("#name").focus();
-	  return false;
+      alert("[이름] 2글자 이상의 한글만 입력가능합니다.");
+      $("#name").val("");
+      $("#name").focus();
+      return false;
   }
   
   if(getSsn.length == 0){
-      alert("주민번호는 필수 입력 사항입니다.");
+      alert("[주민번호] 주민번호는 필수 입력 사항입니다.");
       $("#ssn1").focus();
       return false;
   } else if(check_jumin() == false){
-	  return false;
+      return false;
   }
   
   if(getHpno.length != 0){
       if(!getCheckHpno1.test($("#hpno1").val())){
-          alert("010만 사용가능합니다.");
+          alert("[전화번호]010만 사용가능합니다.");
           $("#hpno1").val("");
           $("#hpno1").focus();
           return false;
@@ -69,7 +80,7 @@ function check(){
 
       //전화번호2 유효성 검사
       if(!getCheckHpno2.test($("#hpno2").val())){
-          alert("4자리의 숫자만 입력해주세요.");
+          alert("[전화번호]4자리의 숫자만 입력해주세요.");
           $("#hpno2").val("");
           $("#hpno2").focus();
           return false;
@@ -77,7 +88,7 @@ function check(){
 
       //전화번호3 유효성 검사
       if(!getCheckHpno3.test($("#hpno3").val())){
-          alert("4자리의 숫자만 입력해주세요.");
+          alert("[전화번호]4자리의 숫자만 입력해주세요.");
           $("#hpno3").val("");
           $("#hpno3").focus();
           return false;
@@ -85,16 +96,16 @@ function check(){
   }
   
   if($("#email").val().length == 0){
-      alert("이메일은 필수 입력 사항입니다.");
+      alert("[이메일] 이메일은 필수 입력 사항입니다.");
       $("#email").focus();
       return false;
   } else {
-	 if(!getMail.test($("#email").val())){
-         alert("이메일형식에 맞게 입력해주세요")
+     if(!getMail.test($("#email").val())){
+         alert("[이메일] 올바른 이메일형식이 아닙니다.")
          $("#email").val("");
          $("#email").focus();
          return false;
-	 }
+     }
   }
       return true;
 }
@@ -106,7 +117,7 @@ function check_jumin(){
 
     //주민번호 유효성 검사
     if (!fmt.test(jumin)) {
-      alert("주민등록번호 형식에 맞게 입력해주세요");
+      alert("[주민번호] 올바른 주민등록번호 형식이 아닙니다.");
       $("#ssn1").val("");
       $("#ssn1").focus();
       return false;
@@ -125,7 +136,7 @@ function check_jumin(){
   }
 
   if ((11 - (sum % 11)) % 10 != buf[12]) {
-    alert("잘못된 주민등록번호 입니다.");
+    alert("[주민번호] 잘못된 주민등록번호 입니다.");
     $("#id_num").focus();
     return false;
   }
@@ -173,13 +184,13 @@ window.onload = function(){
 
 function logincheck(){
       if($("#loginId").val().length == 0){
-        alert("아이디를 입력하세요.");
+        alert("[아이디] 아이디를 입력하세요.");
         $("#id").focus();
         return false;
       }
       
       if($("#loginPW").val().length == 0){
-          alert("비밀번호를 입력하세요.");
+          alert("[비밀번호] 비밀번호를 입력하세요.");
           $("#loginPW").focus();
           return false;
         }
@@ -230,18 +241,6 @@ function logincheck(){
         <div class="navbar-header">
             <a class="navbar-brand" href="main.jsp">IT_SOUP</a>
         </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle"
-                    data-toggle="dropdown" role="button" aria-haspopup="true"  aria-expanded="false">접속하기<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="main.jsp?formNm=login">로그인</a></li>
-                        <li><a href="main.jsp?formNm=join">회원가입</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
     </nav>
         <%
         }
@@ -256,15 +255,16 @@ function logincheck(){
                 <form method = "post" action="loginController" onsubmit="return logincheck()">
                     <h3 style="text-align:center;">로그인</h3>
                     <div class ="form-group">
-                        <input type ="text" class="form-control" placeholder="아이디"  id="loginId"name ="ID" maxlength='20'>
+                        <input type ="text" class="form-control" placeholder="아이디"  id="loginId"name ="ID" maxlength='20' style="width:300px; position:relative; right:35px;">
                     </div>
                     <div class ="form-group">
-                        <input type ="password" class="form-control" placeholder="비밀번호" id="loginPW" name ="PASSWORD" maxlength='20'>
+                        <input type ="password" class="form-control" placeholder="비밀번호" id="loginPW" name ="PASSWORD" maxlength='20' style="width:300px; position:relative; right:35px;">
                     </div>
-                    <input type="submit" class="btn btn-primary form-control" value="로그인">
+                    <input type="submit" class="btn btn-primary form-control" value="로그인" style="width:300px;  position:relative; right:35px;">
                     <div>
-                        <a href="main.jsp?formNm=findID" style="position:relative; padding-up:50px;:30%; red;bottom:-15px;;">아이디 찾기</a>
-                        <a href="main.jsp?formNm=findPW" style="position:relative; 30%; left:100px; left:64px; bottom:-15px;">비밀번호 찾기</a>
+                        <a href="main.jsp?formNm=join" style="position:relative; bottom:-15px;">회원가입</a>
+                        <a href="main.jsp?formNm=findID" style="position:relative; bottom:-15px; right:35px;">아이디 찾기</a>
+                        <a href="main.jsp?formNm=findPW" style="position:relative; 100px; bottom:-15px; left:40px;">비밀번호 찾기</a>
                     </div>
                 </form>
             </div> 
@@ -273,43 +273,47 @@ function logincheck(){
         <%
         } else if("join".equals(formNm)){
         %>
-        <div class="container" >
+        <div class="container">
             <div class ="jumbotron" style="padding-top:20px; background-color:#eee; width:60%; position:relative; left:20%;">
                 <form method = "post" action="joinController" onsubmit="return check()"style=" width:100%; ">
                     <h3 style="text-align:center;">회원가입</h3>
                     <div class ="form-group" style="right-padding:20%;">
-                       <h5 style="width:60px; float:left; position:relative; top:-4px; left:15px;">아이디</h5>
-                       <input type ="text" placeholder="필수입력사항" name ="ID" id="id" maxlength='20' style="width:450px; position:relative; left:5%;">
+                       <h5 style="width:110px; float:left; position:relative; top:-4px; left:15px;">*아이디</h5>
+                       <input type ="text"  placeholder="필수입력항목" name ="ID" id="id" maxlength='20' style="ime-mode:disabled; width:400px; position:relative; left:5%;">
                     </div>
                     <div class ="form-group">
-                        <h5 style="width:60px; float:left; position:relative; top:-4px; left:15px; ">비밀번호</h5>
-                        <input type ="password" placeholder="필수입력사항" name ="PASSWORD" id="password" maxlength='20' style="width:450px; position:relative; left:5%;">
+                        <h5 style="width:110px; float:left; position:relative; top:-4px; left:15px; ">*비밀번호</h5>
+                        <input type ="password"   placeholder="필수입력항목" name ="PASSWORD" id="password1" maxlength='20' style="ime-mode:disabled; width:400px; position:relative; left:5%;">
                     </div>
                     <div class ="form-group">
-                        <h5 style="width:60px; float:left; position:relative; top:-4px; left:15px; ">이름</h5>
-                        <input type ="text" placeholder="필수입력사항" name ="NAME"  id="name" maxlength='20' style="width:450px; position:relative; left:5%;">
+                        <h5 style="width:110px; float:left; position:relative; top:-4px; left:15px; ">*비밀번호 재확인</h5>
+                        <input type ="password"   placeholder="필수입력항목" name ="PASSWORD2" id="password2" maxlength='20' style="ime-mode:disabled; width:400px; position:relative; left:5%;">
                     </div>
                     <div class ="form-group">
-                        <h5 style="width:60px; float:left; position:relative; top:-4px; left:15px; ">주민번호</h5>
-                        <input type ="text" placeholder="필수입력사항" name ="SSN1" id="ssn1" maxlength='6' style="width:220px; position:relative; left:5%;">
-                        <input type ="password" placeholder="필수입력사항" name ="SSN2" id="ssn2" maxlength='7' style="width:225px; position:relative; left:5%;">
+                        <h5 style="width:110px; float:left; position:relative; top:-4px; left:15px; ">*이름</h5>
+                        <input type ="text"   placeholder="필수입력항목" name ="NAME"  id="name" maxlength='20' style="ime-mode:active; width:400px; position:relative; left:5%;">
                     </div>
                     <div class ="form-group">
-                        <h5 style="width:60px; float:left; position:relative; top:-4px; left:15px; ">전화번호</h5>
-                        <input type ="text" placeholder="010" name ="HPNO1"  id="hpno1" maxlength='3'  style="width:140px; text-align:center; position:relative; left:5%;">
-                        <input type ="text"  placeholder="1111" name ="HPNO2"  id="hpno2" maxlength='4' style="width:150px; text-align:center; position:relative; left:5%;" >
-                        <input type ="text" placeholder="1111" name ="HPNO3"  id="hpno3" maxlength='4' style="width:150px; text-align:center; position:relative; left:5%;" >
+                        <h5 style="width:110px; float:left; position:relative; top:-4px; left:15px; ">*주민번호</h5>
+                        <input type ="text"  placeholder="필수입력항목"  name ="SSN1" id="ssn1" maxlength='6' style="width:195px; position:relative; left:5%;">
+                        <input type ="password" placeholder="필수입력항목"   name ="SSN2" id="ssn2" maxlength='7' style="width:200px; position:relative; left:5%;">
                     </div>
                     <div class ="form-group">
-                        <h5 style="width:60px; float:left; position:relative; top:-4px; left:15px; ">이메일</h5>
-                        <input type ="text"  placeholder="필수입력사항" name ="EMAIL" id="email" maxlength='50' style="width:450px; position:relative; left:5%;">
+                        <h5 style="width:110px; float:left; position:relative; top:-4px; left:15px; ">전화번호</h5>
+                        <input type ="text"  name ="HPNO1"  id="hpno1" maxlength='3'  style="width:124px; text-align:center; position:relative; left:5%;">
+                        <input type ="text"   name ="HPNO2"  id="hpno2" maxlength='4' style="width:133px; text-align:center; position:relative; left:5%;" >
+                        <input type ="text"  name ="HPNO3"  id="hpno3" maxlength='4' style="width:133px; text-align:center; position:relative; left:5%;" >
                     </div>
                     <div class ="form-group">
-                        <h5 style="width:60px; float:left; position:relative; top:-4px; left:15px;">주소</h5>
-                        <input type ="text"  placeholder="주소1" name ="ADDR1"  id="addr" maxlength='20' style="width:450px; position:relative; left:5%;">
-                        <input type ="text"  placeholder="주소2" name ="ADDR2"  id="addr2" maxlength='20' style="width:450px; position:relative; left:5%;">
+                        <h5 style="width:110px; float:left; position:relative; top:-4px; left:15px; ">*이메일</h5>
+                        <input type ="text"  placeholder="필수입력항목"   name ="EMAIL" id="email" maxlength='50' style="ime-mode:inactive; width:400px; position:relative; left:5%;">
                     </div>
-                    <input type="submit" class="btn btn-primary form-control" value="회원가입">
+                    <div class ="form-group">
+                        <h5 style="width:110px; float:left; position:relative; top:-4px; left:15px;">주소</h5>
+                        <input type ="text" placeholder="클릭시 주소찾기 팝업을 호출합니다."   name ="ADDR1"  id="addr" maxlength='20' style="ime-mode:active; width:400px; position:relative; left:5%;">
+                        <input type ="text"   name ="ADDR2"  id="addr2" maxlength='20' style="ime-mode:active; width:400px; position:relative; left:5%;">
+                    </div>
+                    <input type="submit" class="btn btn-primary form-control" value="회원가입" style="width:540px;">
                 </form>
             </div>
             </div>
@@ -367,15 +371,16 @@ function logincheck(){
                 <form method = "post" action="loginController" onsubmit="return logincheck()">
                     <h3 style="text-align:center;">로그인</h3>
                     <div class ="form-group">
-                        <input type ="text" class="form-control" placeholder="아이디"  id="loginId"name ="ID" maxlength='20'>
+                        <input type ="text" class="form-control" placeholder="아이디"  id="loginId"name ="ID" maxlength='20' style="width:300px; position:relative; right:35px;">
                     </div>
                     <div class ="form-group">
-                        <input type ="password" class="form-control" placeholder="비밀번호" id="loginPW" name ="PASSWORD" maxlength='20'>
+                        <input type ="password" class="form-control" placeholder="비밀번호" id="loginPW" name ="PASSWORD" maxlength='20' style="width:300px; position:relative; right:35px;">
                     </div>
-                    <input type="submit" class="btn btn-primary form-control" value="로그인">
+                    <input type="submit" class="btn btn-primary form-control" value="로그인" style="width:300px;  position:relative; right:35px;">
                     <div>
-                        <a href="main.jsp?formNm=findID" style="position:relative; padding-up:50px;:30%; red;bottom:-15px;;">아이디 찾기</a>
-                        <a href="main.jsp?formNm=findPW" style="position:relative; 30%; left:100px; left:64px; bottom:-15px;">비밀번호 찾기</a>
+                        <a href="main.jsp?formNm=join" style="position:relative; bottom:-15px; right:32px;">회원가입</a>
+                        <a href="main.jsp?formNm=findID" style="position:relative; bottom:-15px; left:2px;">아이디 찾기</a>
+                        <a href="main.jsp?formNm=findPW" style="position:relative; 100px; bottom:-15px; left:40px;">비밀번호 찾기</a>
                     </div>
                 </form>
             </div> 

@@ -31,13 +31,22 @@ public class findPwController extends HttpServlet {
         
         request.setAttribute("findPw", findPw);
         
+        System.out.println("findPw = " + findPw);
+        
+        
         RequestDispatcher dispatcher = request.getRequestDispatcher( "main.jsp");
         dispatcher.forward(request, response);
         
         if(null != findPw || !"".equals(findPw)) {
             String tmpPw = findPwDAO.tmpPw();
             
+            System.out.println("tmpPw = " + tmpPw);;
+            
             int updateTmpPw = findPwDAO.updateTmpPw(tmpPw, Id, Email);
+            
+            System.out.println("updateTmpPw = " + updateTmpPw);
+            
+            
             if(updateTmpPw == -1) {
                 PrintWriter script = response.getWriter();
                 script.println("<script>");
@@ -45,7 +54,13 @@ public class findPwController extends HttpServlet {
                 script.println("history.back()");
                 script.println("</script>");
             } else {
-                int tmpPwMail = findPwDAO.sendMail(tmpPw);
+                
+                
+                System.out.println("여기???????");
+                
+                
+                
+                int tmpPwMail = findPwDAO.sendMail();
                 
                 if(tmpPwMail == 1) {
                     PrintWriter script = response.getWriter();
@@ -56,7 +71,7 @@ public class findPwController extends HttpServlet {
                 } else {
                     PrintWriter script = response.getWriter();
                     script.println("<script>");
-                    script.println("alert('임시비밀번호 이메일로 전송이 실하였습니다..')");
+                    script.println("alert('임시비밀번호 이메일로 전송이 실패하였습니다..')");
                     script.println("history.back()");
                     script.println("</script>");
                 }

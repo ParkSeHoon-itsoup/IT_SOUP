@@ -34,27 +34,21 @@ public class findController extends HttpServlet {
     
         String findID = findDAO.find(userDTO.getNAME(), userDTO.getSSN());
 
-        request.setAttribute("findID", findID);
-        
-        RequestDispatcher dispatcher = request.getRequestDispatcher( "main.jsp");
-        dispatcher.forward(request, response);
-        
-        if(findID == null || "".equals(findID)) {
+        if("".equals(findID) || findID == null) {
+                PrintWriter script = response.getWriter();
+                script.println("<script>");
+                script.println("alert('이름 또는 주민번호가 잘못 입력 되었습니다.')");
+                script.println("history.back()");
+                script.println("</script>");
+            }  else {
+            request.setAttribute("findID", findID);
+            
             PrintWriter script = response.getWriter();
             script.println("<script>");
-            System.out.println("3333333333333333333333333333333");
-            script.println("alert('이름 또는 주민번호가 잘못 입력 되었습니다.')");
-            System.out.println("4444444444444444444444444444444444");
-            script.println("history.back()");
-            script.println("</script>");
-        } else {
-            PrintWriter script = response.getWriter();
-            script.println("<script>");
-            System.out.println("11111111111111111111111111111");
             script.println("alert('아이디는" + request.getAttribute("findID") + "입니다.')");
-            System.out.println("22222222222222222222222222222");
-            script.println("history.back()");
+            script.println("location.href='main.jsp'");
             script.println("</script>");
         }
+        
     }
 }

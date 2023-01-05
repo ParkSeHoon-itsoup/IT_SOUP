@@ -29,7 +29,8 @@ public class joinController extends HttpServlet {
         String NAME= request.getParameter("NAME");
         String SSN= request.getParameter("SSN1") + request.getParameter("SSN2") ;
         String HPNO= request.getParameter("HPNO1") + request.getParameter("HPNO2") + request.getParameter("HPNO3");
-        String ADDR= request.getParameter("ADDR1") + ", " + request.getParameter("ADDR2");
+        String ADDR= request.getParameter("ADDR1");
+        String ADDR2 = request.getParameter("ADDR2");
         String EMAIL= request.getParameter("EMAIL");
         
         UserDTO userDTO = new UserDTO();
@@ -39,33 +40,14 @@ public class joinController extends HttpServlet {
         userDTO.setSSN(SSN);
         userDTO.setHPNO(HPNO);
         userDTO.setADDR(ADDR);
+        userDTO.setADDR2(ADDR2);
         userDTO.setEMAIL(EMAIL);
 
-        PrintWriter script = response.getWriter();
-
-        if(null == ID || "".equals(ID)) {
-            script.println("<script>");
-            script.println("alert('아이디는 필수 입력 사항입니다.')>");
-            script.println("history.back()");
-            script.println("</script>");
-        } else if(null == PASSWORD || "".equals(PASSWORD)) {
-            script.println("<script>");
-            script.println("alert('비밀번호는 필수 입력 사항입니다.')>");
-            script.println("history.back()");
-            script.println("</script>");
-        } else if((null != ID || !"".equals(ID)) && (ID.length() <4)){
-            script.println("<script>");
-            script.println("alert('아이디는 4글자 이상이어야 합니다.')>");
-            script.println("history.back()");
-            script.println("</script>");
-        } else if((null != ID || !"".equals(ID)) && (ID.length() > 4)){
             UserDAO userDAO = new UserDAO();
             
             int result = userDAO.chkID(ID);
                         
             if(result == 0) {
-                System.out.println("사용 가능한 ID 입니다.");
-                
                 UserDAO userDAO2 = new UserDAO();
                 
                 int result2 = userDAO2.join(userDTO);
@@ -73,17 +55,22 @@ public class joinController extends HttpServlet {
                 if(result2 ==-1) {
                     System.out.println("회원가입실패");
                 } else {
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("main.jsp");
-                    dispatcher.forward(request, response);
+                    PrintWriter script = response.getWriter();
+                    script.println("<script>");
+                    script.println("alert('가입이 정상적으로 완료되었습니다. 로그인 화면에서 로그인 하세요.')");
+                    script.println("location.href='main.jsp'");
+                    script.println("</script>");
+                    
+//                    RequestDispatcher dispatcher = request.getRequestDispatcher("main.jsp");
+//                    dispatcher.forward(request, response);
                     System.out.println("회원가입성공");
                 }
             } else {
+                PrintWriter script = response.getWriter();
                 script.println("<script>");
-                script.println("alert('이미 사용중인 아이디 입니다.')>");
+                script.println("alert('이미 사용중인 아이디 입니다.')");
                 script.println("history.back()");
                 script.println("</script>");
-            } 
-        } else {
-        }
+        } 
     }
 }
