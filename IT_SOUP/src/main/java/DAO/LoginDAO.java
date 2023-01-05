@@ -40,7 +40,7 @@ public class LoginDAO {
         } catch(Exception e) {
             System.out.println("로그인 실패 : " + e);
         }
-        return -1;
+        return -2;
     }
     
     public String naming(String string) {

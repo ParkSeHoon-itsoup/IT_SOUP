@@ -60,7 +60,7 @@ public class findPwController extends HttpServlet {
                 
                 
                 
-                int tmpPwMail = findPwDAO.sendMail();
+                int tmpPwMail = findPwDAO.sendMail(tmpPw);
                 
                 if(tmpPwMail == 1) {
                     PrintWriter script = response.getWriter();

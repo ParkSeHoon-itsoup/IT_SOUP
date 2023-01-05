@@ -67,13 +67,19 @@ public class loginController extends HttpServlet {
 	    } else if(result == 0) {
             PrintWriter script = response.getWriter();
             script.println("<script>");
-            script.println("alert('비밀번호가 틀립니다1.')");
+            script.println("alert('비밀번호가 틀립니다.')");
             script.println("history.back()");
             script.println("</script>");
 	    } else if(result == -1){
             PrintWriter script = response.getWriter();
             script.println("<script>");
             script.println("alert('존재하지 않는 아이디 입니다.')");
+            script.println("history.back()");
+            script.println("</script>");
+        } else if(result == -2) {
+            PrintWriter script = response.getWriter();
+            script.println("<script>");
+            script.println("alert('서버오류')");
             script.println("history.back()");
             script.println("</script>");
         }

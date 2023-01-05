@@ -5,13 +5,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
-import java.util.Random;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -73,7 +73,7 @@ public class FindPwDAO{
     }
     
     public int updateTmpPw(String tmpPw, String Id, String Email) {
-        String SQL = "UPDATE TB_EMP SET PASSWORD = ? WHERE ID = ? AND EMAIL = trim(?)";
+        String SQL = "UPDATE TB_EMP SET PASSWORD = hex(aes_encrypt(?,'PASSWORD')) WHERE ID = ? AND EMAIL = ?";
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
@@ -89,39 +89,44 @@ public class FindPwDAO{
         return -1;
     }
     
-    public int sendMail() {
-        String host = "smtp.naver.com";
-        String user = "chulgisibjo@naver.com";
-        String password = "ttff~~7546";
+    public int sendMail(String tmpPw) {
         
-        Properties props = new Properties();
-        props.put("mail..smtp.host", host);
-        props.put("mail.smtp.port", 587);
-        props.put("mail.smtp.auth", "true");
-        
-        Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(user, password);
+          
+            String user = "chulgisibjo@gmail.com";
+            String password = "mcuiqrzfrnzihrzl"; 
+
+            Properties prop = new Properties();
+            prop.put("mail.smtp.host", "smtp.gmail.com"); 
+            prop.put("mail.smtp.port", 587); 
+            prop.put("mail.smtp.auth", "true"); 
+            prop.put("mail.smtp.starttls.enable", "true"); 
+            prop.put("mail.smtp.TLS.trust", "smtp.gmail.com");
+            prop.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");
+            
+            Session session = Session.getDefaultInstance(prop, new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(user, password);
+                }
+            });
+
+            try {
+                MimeMessage message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(user));
+
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress("1182836@daum.net")); 
+
+                message.setSubject("[IT_SOUP] 임시 비밀번호 발송"); 
+
+                message.setText(tmpPw + "새로운 임시 비밀번호가 발송되었습니다. 반드시 사이트에 접속해 비밀번호를 변경하세요.");
+
+                Transport.send(message);
+                System.out.println("메일 보내기 성공");
+                
+            } catch (AddressException e) {
+                e.printStackTrace();
+            } catch (MessagingException e) {
+                e.printStackTrace();
             }
-        });
-        
-        try {
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(user));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress("1182836@daum.net"));
-            
-            //메일 제목
-            message.setSubject("임시비밀번호가 발급되었습니다.");
-            
-            //메일 내용
-            message.setText("제목");
-            
-            Transport.send(message);
-            
             return 1;
-        } catch(MessagingException  e) {
-            e.printStackTrace();
         }
-        return -1;
-    }
 }
