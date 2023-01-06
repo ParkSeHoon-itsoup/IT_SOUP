@@ -3,7 +3,6 @@ package Controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,8 +21,8 @@ public class findPwController extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/html; charset=utf-8");
 	    
-        String Id = request.getParameter("ID");
-        String Email = request.getParameter("EMAIL");
+        String Id = request.getParameter("ID").replace(" ", "");
+        String Email = request.getParameter("EMAIL").replace(" ", "");
         
         FindPwDAO findPwDAO = new FindPwDAO();
         
@@ -31,21 +30,10 @@ public class findPwController extends HttpServlet {
         
         request.setAttribute("findPw", findPw);
         
-        System.out.println("findPw = " + findPw);
-        
-        
-        RequestDispatcher dispatcher = request.getRequestDispatcher( "main.jsp");
-        dispatcher.forward(request, response);
-        
         if(null != findPw || !"".equals(findPw)) {
             String tmpPw = findPwDAO.tmpPw();
             
-            System.out.println("tmpPw = " + tmpPw);;
-            
             int updateTmpPw = findPwDAO.updateTmpPw(tmpPw, Id, Email);
-            
-            System.out.println("updateTmpPw = " + updateTmpPw);
-            
             
             if(updateTmpPw == -1) {
                 PrintWriter script = response.getWriter();
@@ -54,24 +42,18 @@ public class findPwController extends HttpServlet {
                 script.println("history.back()");
                 script.println("</script>");
             } else {
-                
-                
-                System.out.println("여기???????");
-                
-                
-                
-                int tmpPwMail = findPwDAO.sendMail(tmpPw);
+                int tmpPwMail = findPwDAO.sendMail(tmpPw, Email);
                 
                 if(tmpPwMail == 1) {
                     PrintWriter script = response.getWriter();
                     script.println("<script>");
-                    script.println("alert('임시비밀번호가 이메일로 전송되었습니다..')");
-                    script.println("history.back()");
+                    script.println("alert('임시비밀번호가 가입시 작성하신 이메일로 발송되었습니다. 이메일을 확인해 주세요.')");
+                    script.println("location.href='main.jsp'");
                     script.println("</script>");
                 } else {
                     PrintWriter script = response.getWriter();
                     script.println("<script>");
-                    script.println("alert('임시비밀번호 이메일로 전송이 실패하였습니다..')");
+                    script.println("alert('임시비밀번호 이메일 전송이 실패하였습니다..')");
                     script.println("history.back()");
                     script.println("</script>");
                 }
@@ -79,7 +61,7 @@ public class findPwController extends HttpServlet {
         } else {
             PrintWriter script = response.getWriter();
             script.println("<script>");
-            script.println("alert('이메일 또는 이메일주소가 잘못 입력 되었습니다.')");
+            script.println("alert('아이디 또는 이메일주소가 잘못 입력 되었습니다.')");
             script.println("history.back()");
             script.println("</script>");
         }

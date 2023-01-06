@@ -214,7 +214,7 @@ function logincheck(){
         %>
     <nav class="navbar navbar-default">
         <div class="navbar-header">
-            <a class="navbar-brand" href="schedule.jsp">IT_SOUP</a>
+            <a class="navbar-brand" href="main.jsp">IT_SOUP</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
@@ -299,7 +299,7 @@ function logincheck(){
                         <input type ="password" placeholder="필수입력항목"   name ="SSN2" id="ssn2" maxlength='7' style="width:200px; position:relative; left:5%;">
                     </div>
                     <div class ="form-group">
-                        <h5 style="width:110px; float:left; position:relative; top:-4px; left:15px; ">전화번호</h5>
+                        <h5 style="width:110px; float:left; position:relative; top:-4px; left:15px; "> 전화번호</h5>
                         <input type ="text"  name ="HPNO1"  id="hpno1" maxlength='3'  style="width:124px; text-align:center; position:relative; left:5%;">
                         <input type ="text"   name ="HPNO2"  id="hpno2" maxlength='4' style="width:133px; text-align:center; position:relative; left:5%;" >
                         <input type ="text"  name ="HPNO3"  id="hpno3" maxlength='4' style="width:133px; text-align:center; position:relative; left:5%;" >
@@ -309,7 +309,7 @@ function logincheck(){
                         <input type ="text"  placeholder="필수입력항목"   name ="EMAIL" id="email" maxlength='50' style="ime-mode:inactive; width:400px; position:relative; left:5%;">
                     </div>
                     <div class ="form-group">
-                        <h5 style="width:110px; float:left; position:relative; top:-4px; left:15px;">주소</h5>
+                        <h5 style="width:110px; float:left; position:relative; top:-4px; left:15px;"> 주소</h5>
                         <input type ="text" placeholder="클릭시 주소찾기 팝업을 호출합니다."   name ="ADDR1"  id="addr" maxlength='20' style="ime-mode:active; width:400px; position:relative; left:5%;">
                         <input type ="text"   name ="ADDR2"  id="addr2" maxlength='20' style="ime-mode:active; width:400px; position:relative; left:5%;">
                     </div>
@@ -339,6 +339,9 @@ function logincheck(){
                         <input type ="password" class="form-control" placeholder="주민번호" id="findSSN"  name ="SSN" maxlength='20'>
                     </div>
                     <input type="submit" class="btn btn-primary form-control" value="아이디 찾기">
+                    <div>
+                        <a href="main.jsp?formNm=main" style="position:relative; bottom:-15px; left:90px;">홈으로</a>
+                    </div>
                 </form>
             </div> 
         </div> 
@@ -357,7 +360,8 @@ function logincheck(){
                     <div class ="form-group">
                         <input type ="password" class="form-control" placeholder="이메일" id="findEmail"  name ="EMAIL" maxlength='20'>
                     </div>
-                    <input type="submit" class="btn btn-primary form-control" value="비밀번호 찾기">
+                    <input type="submit" class="btn btn-primary form-control" value="임시비밀번호 이메일 발송">
+                        <a href="main.jsp?formNm=main" style="position:relative; bottom:-15px; left:90px;">홈으로</a>
                 </form>
             </div> 
         </div> 

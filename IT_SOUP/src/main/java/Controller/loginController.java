@@ -40,8 +40,8 @@ public class loginController extends HttpServlet {
             script.println("</script>");
         }
         
-        String ID = request.getParameter("ID");
-        String PASSWORD = request.getParameter("PASSWORD");
+        String ID = request.getParameter("ID").replace(" ", "");
+        String PASSWORD = request.getParameter("PASSWORD").replace(" ", "");
         
         UserDTO userDTO = new UserDTO();
         userDTO.setID(ID);
@@ -54,15 +54,18 @@ public class loginController extends HttpServlet {
 	    if(result == 1) {
 	        session.setAttribute("ID", ID);
 	        
-	        request.setAttribute("formNm", "session");
-	        
 	        String namingResult = loginDAO.naming(userDTO.getID());
 	        ID = (String)session.getAttribute("ID");
+	        
+	        String name = loginDAO.name(ID);
+	        session.setAttribute("name", name);
+	        
 	        String naming = namingResult + " (" + ID + ")";
 	        
 	        request.setAttribute("naming", naming);
-
-            RequestDispatcher dispatcher = request.getRequestDispatcher( "main.jsp");
+            request.setAttribute("formNm", "notice");
+	        
+            RequestDispatcher dispatcher = request.getRequestDispatcher( "notice.jsp");
             dispatcher.forward(request, response);
 	    } else if(result == 0) {
             PrintWriter script = response.getWriter();

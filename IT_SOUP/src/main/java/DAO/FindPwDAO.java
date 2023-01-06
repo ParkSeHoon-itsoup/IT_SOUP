@@ -89,7 +89,7 @@ public class FindPwDAO{
         return -1;
     }
     
-    public int sendMail(String tmpPw) {
+    public int sendMail(String tmpPw, String Email) {
         
           
             String user = "chulgisibjo@gmail.com";
@@ -113,11 +113,11 @@ public class FindPwDAO{
                 MimeMessage message = new MimeMessage(session);
                 message.setFrom(new InternetAddress(user));
 
-                message.addRecipient(Message.RecipientType.TO, new InternetAddress("1182836@daum.net")); 
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(Email)); 
 
                 message.setSubject("[IT_SOUP] 임시 비밀번호 발송"); 
 
-                message.setText(tmpPw + "새로운 임시 비밀번호가 발송되었습니다. 반드시 사이트에 접속해 비밀번호를 변경하세요.");
+                message.setText("임시 비밀번호 [" + tmpPw + " ] 가 발송되었습니다. 반드시 사이트에 접속해 비밀번호를 변경하세요.");
 
                 Transport.send(message);
                 System.out.println("메일 보내기 성공");

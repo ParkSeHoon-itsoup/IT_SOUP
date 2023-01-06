@@ -22,7 +22,7 @@ public class LoginDAO {
     }
     
     public int login(String id, String password) {
-        String SQL = "SELECT convert(AES_DECRYPT(unhex(password), 'PASSWORD') using UTF8) as PASSWORD FROM TB_EMP WHERE ID = ?";
+        String SQL = "SELECT convert(AES_DECRYPT(unhex(password), 'PASSWORD') using UTF8) as PASSWORD, NO, NAME FROM TB_EMP WHERE ID = ?";
         
         try {
             
@@ -59,5 +59,24 @@ public class LoginDAO {
             System.out.println("이름찾기실패 : " + e);
         }
         return null;
+    }
+    
+    public String name(String ID) {
+        String SQL = "SELECT NAME FROM TB_EMP WHERE ID = ?";
+
+        try {
+        PreparedStatement pstmt = conn.prepareStatement(SQL);
+        pstmt.setString(1, ID);
+        rs = pstmt.executeQuery();
+        
+            if(rs.next()) {
+                return rs.getString(1);
+            }else {
+                return "잘못된 ID입니다."; 
+            }
+        } catch(Exception e) {
+            System.out.println("사원이름 찾기실패 : " + e);
+        }
+        return "사원이름찾기 실패";
     }
 }

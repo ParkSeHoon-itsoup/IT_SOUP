@@ -25,13 +25,13 @@ public class joinController extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         
         String ID= request.getParameter("ID");
-        String PASSWORD= request.getParameter("PASSWORD");
-        String NAME= request.getParameter("NAME");
-        String SSN= request.getParameter("SSN1") + request.getParameter("SSN2") ;
-        String HPNO= request.getParameter("HPNO1") + request.getParameter("HPNO2") + request.getParameter("HPNO3");
-        String ADDR= request.getParameter("ADDR1");
-        String ADDR2 = request.getParameter("ADDR2");
-        String EMAIL= request.getParameter("EMAIL");
+        String PASSWORD= request.getParameter("PASSWORD").replace(" ", "");
+        String NAME= request.getParameter("NAME").replace(" ", "");
+        String SSN= request.getParameter("SSN1") + request.getParameter("SSN2") .replace(" ", "");
+        String HPNO= request.getParameter("HPNO1").replace(" ", "") + request.getParameter("HPNO2").replace(" ", "") + request.getParameter("HPNO3").replace(" ", "");
+        String ADDR= request.getParameter("ADDR1").replace(" ", "");
+        String ADDR2 = request.getParameter("ADDR2").replace(" ", "");
+        String EMAIL= request.getParameter("EMAIL").replace(" ", "");
         
         UserDTO userDTO = new UserDTO();
         userDTO.setID(ID);

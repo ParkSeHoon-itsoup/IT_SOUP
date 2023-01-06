@@ -23,8 +23,8 @@ public class findController extends HttpServlet {
         response.setContentType("text/html; charset=utf-8");
         response.setCharacterEncoding("utf-8");
         
-        String findNM = request.getParameter("NAME");
-        String findSSN = request.getParameter("SSN");
+        String findNM = request.getParameter("NAME").replace(" ", "");
+        String findSSN = request.getParameter("SSN").replace(" ", "");
         
         UserDTO userDTO = new UserDTO();
         userDTO.setNAME(findNM);
