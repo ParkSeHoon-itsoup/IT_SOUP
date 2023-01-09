@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import DTO.UserDTO;
+
 public class LoginDAO {
     private Connection conn;
     private ResultSet rs;
@@ -61,22 +63,49 @@ public class LoginDAO {
         return null;
     }
     
-    public String name(String ID) {
-        String SQL = "SELECT NAME FROM TB_EMP WHERE ID = ?";
+    public UserDTO  getEMP(String ID) {
+        String SQL = "SELECT NAME"
+                + "                        , CHG_PW_YN"
+                + "                        , LEVEL"
+                + "                        , MOD_DD"
+                + "              FROM TB_EMP "
+                + "            WHERE ID = ?";
 
         try {
-        PreparedStatement pstmt = conn.prepareStatement(SQL);
-        pstmt.setString(1, ID);
-        rs = pstmt.executeQuery();
-        
-            if(rs.next()) {
+            PreparedStatement pstmt = conn.prepareStatement(SQL);
+            pstmt.setString(1, ID);
+            
+            rs = pstmt.executeQuery();
+             if(rs.next()) {
+                 UserDTO userDTO = new UserDTO();
+                 userDTO.setNAME(rs.getString(1));
+                 userDTO.setCHG_PW_YN(rs.getString(2));
+                 userDTO.setLEVEL(rs.getString(3));
+                 userDTO.setMOD_DD(rs.getString(4));
+                 return userDTO;
+             }
+         }catch(Exception e) {
+             System.out.println("사원이름 찾기실패 : " + e);
+         }
+        return null;
+    }
+    
+    public String  getLevel(String ID) {
+        String SQL = "SELECT LEVEL"
+                + "              FROM TB_EMP "
+                + "            WHERE ID = ?";
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(SQL);
+            pstmt.setString(1, ID);
+            
+            rs = pstmt.executeQuery();
+             if(rs.next()) {
                 return rs.getString(1);
-            }else {
-                return "잘못된 ID입니다."; 
-            }
-        } catch(Exception e) {
-            System.out.println("사원이름 찾기실패 : " + e);
-        }
-        return "사원이름찾기 실패";
+             }
+         }catch(Exception e) {
+             System.out.println("관리자권한 찾기실패 : " + e);
+         }
+        return null;
     }
 }

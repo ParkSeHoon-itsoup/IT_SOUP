@@ -117,7 +117,7 @@ public class FindPwDAO{
 
                 message.setSubject("[IT_SOUP] 임시 비밀번호 발송"); 
 
-                message.setText("임시 비밀번호 [" + tmpPw + " ] 가 발송되었습니다. 반드시 사이트에 접속해 비밀번호를 변경하세요.");
+                message.setText("임시 비밀번호 [" + tmpPw + "] 가 발송되었습니다. 반드시 사이트에 접속해 비밀번호를 변경하세요.");
 
                 Transport.send(message);
                 System.out.println("메일 보내기 성공");

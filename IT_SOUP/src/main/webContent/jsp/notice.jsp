@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.io.PrintWriter" %>
+<%@ page import="DAO.NoticeDAO" %>
+<%@ page import="DTO.NoticeDTO" %>
+<%@ page import="java.util.ArrayList" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,15 +26,23 @@
             
         session = request.getSession();
         
-        String ID = (String)session.getAttribute("ID");
-        String naming = (String)request.getAttribute("naming");
-        String naming2 = request.getParameter("naming2");
+        String naming = (String)session.getAttribute("naming");
+        String LEVEL = (String)session.getAttribute("LEVEL");
         
-        String name = (!"".equals(naming) || null != naming)  ? naming : naming2 ;
+        String ID = (String)session.getAttribute("ID");
+        String NAME = (String)session.getAttribute("NAME");
 
         if( (String)request.getAttribute("ID") != null){
             ID =  (String)request.getAttribute("ID");
         }
+
+        int pageNumber = 1;
+        if(request.getParameter("pageNumber") != null){
+            pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
+        }
+        
+        int currentPage = pageNumber;
+        int strartRow = (pageNumber-1)*10 +1;
     %>
     <nav class="navbar navbar-default">
         <div class="navbar-header">
@@ -46,7 +57,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" 
-                            data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%=name %><span class="caret"></span></a>
+                            data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%=naming %><span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="logoutController">로그아웃</a></li>
                             <li><a href="">내정보관리</a></li>
@@ -72,43 +83,58 @@
                 </thead>
                 <tbody>
                 <%
-      //             BbsDAO bbsDAO = new BbsDAO();
-     //              ArrayList<Bbs> list = bbsDAO.getList(pageNumber);
+                
+                   NoticeDAO noticeDAO = new NoticeDAO();
+                   int cnt = noticeDAO.listCount();
+                   ArrayList<NoticeDTO> list = noticeDAO.getList(strartRow);
                    
-         //          for(int i=0; i<list.size(); i++){
+                   for(int i=0; i<list.size(); i++){
                 %>
                     <tr>
-<%--                         <td style="text-align:center"><%=list.get(i).getBbsID() %></td> --%>
-<%--                         <td style="text-align:center"><a href="view.jsp?bbsID=<%=list.get(i).getBbsID() %>"><%=list.get(i).getBbsTitle().replaceAll(" ", "&nbsp;").replaceAll("<", "&alt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>") %></a></td> --%>
-<%--                         <td style="text-align:center"><%=list.get(i).getUserID() %></td> --%>
-<%--                         <td style="text-align:center"><%=list.get(i).getBbsDate().substring(0,11) + list.get(i).getBbsDate().substring(11, 13) + "시 " + list.get(i).getBbsDate().substring(14, 16) + "분 " %></td> --%>
+                        <td style="text-align:center"><%=list.get(i).getN_NO() %></td>
+                        <td style="text-align:center"><a href="notice_write.jsp?N_NO=<%=list.get(i).getN_NO() %>&formNm=notice_read"><%=list.get(i).getN_TITLE().replaceAll(" ", "&nbsp;").replaceAll("<", "&alt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>") %></a></td>
+                        <td style="text-align:center"><%=list.get(i).getNAME() %></td>
+                        <td style="text-align:center"><%=list.get(i).getN_DATE().substring(0,11) + list.get(i).getN_DATE().substring(11, 13) + "시 " + list.get(i).getN_DATE().substring(14, 16) + "분 " %></td>
                     </tr>
                 <%
-       //            }
+                   }
                 %>
                 </tbody>
             </table>
             <%
-              // if(pageNumber != 1){
+                   int pageCount = cnt/10 + (cnt*10==0?0:1);
+                   int pageBlock = 10;
+                   int startPage = ((pageNumber-1)/pageBlock)*pageBlock+1;
+                   int endPage = startPage + pageBlock-1;
+                   
+                   if(endPage > pageCount){
+                       endPage = pageCount;
+                   }
+
+                  if(startPage>pageBlock){
             %>
-<%--      ///              <a href="bbs.jsp?pageNumber=<%=pageNumber - 1 %>" class="btn btn-success btn-arrow-left">이전</a> --%>
+                   <a href="notice.jsp?pageNumber=<%=startPage-pageBlock %>" >[이전]</a>
             <%
-       //         }
+                   }
             
-              //  if(bbsDAO.nextPage(pageNumber + 1)){
+                  for(int idx=startPage; idx<=endPage; idx++){
             %>
-<%--      //               <a href="bbs.jsp?pageNumber=<%=pageNumber + 1 %>" class="btn btn-success btn-arrow-left">다음</a> --%>
+                    <a href="notice.jsp?pageNumber=<%=idx  %>"><%=idx %></a>
             <%
-     //           }
+                  }
+            
+                 if(endPage<pageCount){
             %>
-            <a href="notice_write.jsp?naming=<%= name %>" class="btn btn-primary pull-right">글쓰기</a>
+                     <a href="notice.jsp?pageNumber=<%=startPage+pageBlock %>">[다음]</a>
             <%
-             if("list".equals(formNm)){
+                 } 
+            
+            if("01".equals(LEVEL) || "02".equals(LEVEL)){
             %>
-            <a href="notice_write.jsp" class="btn btn-primary pull-right">목록</a>
-            <%
-              }
-            %>
+             <a href="notice_write.jsp?naming=<%= naming %>&formNm='notice_write'" class="btn btn-primary pull-right">글쓰기</a>
+             <%
+            }
+             %> 
         </div>
     </div>
         <script src="js/bootstrap.js"></script>

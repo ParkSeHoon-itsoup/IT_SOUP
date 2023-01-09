@@ -36,7 +36,7 @@ public class loginController extends HttpServlet {
             PrintWriter script = response.getWriter();
             script.println("<script>");
             script.println("alert('이미 로그인 되어 있습니다.')");
-            script.println("location.href='main.jsp");
+            script.println("location.href='main.jsp'");
             script.println("</script>");
         }
         
@@ -48,25 +48,39 @@ public class loginController extends HttpServlet {
         userDTO.setPASSWORD(PASSWORD);
         
         LoginDAO loginDAO = new LoginDAO();
-        
 	    int result = loginDAO.login(userDTO.getID(), userDTO.getPASSWORD());
 	    
 	    if(result == 1) {
 	        session.setAttribute("ID", ID);
+            session.setAttribute("PASSWORD", PASSWORD);
 	        
+            System.out.println("ID = " + ID);
+            System.out.println("PASSWORD = " + PASSWORD);
+            
 	        String namingResult = loginDAO.naming(userDTO.getID());
 	        ID = (String)session.getAttribute("ID");
 	        
-	        String name = loginDAO.name(ID);
-	        session.setAttribute("name", name);
+	        UserDTO  getEMP = loginDAO.getEMP(ID);
+	        String NAME = getEMP.getNAME();
+	        String CHG_PW_YN = getEMP.getCHG_PW_YN();
+	        String LEVEL = getEMP.getLEVEL();
+	        String MOD_DD = getEMP.getMOD_DD();
 	        
 	        String naming = namingResult + " (" + ID + ")";
+	        session.setAttribute("naming", naming);
+            session.setAttribute("LEVEL", LEVEL);
 	        
 	        request.setAttribute("naming", naming);
             request.setAttribute("formNm", "notice");
 	        
-            RequestDispatcher dispatcher = request.getRequestDispatcher( "notice.jsp");
-            dispatcher.forward(request, response);
+	        if("".equals(MOD_DD) || null == MOD_DD  &&  "N".equals(CHG_PW_YN)) {
+                response.sendRedirect("main.jsp?formNm=chgPwYn&naming=" + naming);
+	        } else if((!"".equals(MOD_DD) || null != MOD_DD) && "N".equals(CHG_PW_YN)) {
+	            response.sendRedirect("main.jsp?formNm=lostPwYn&naming=" + naming);
+	        } else {
+	            RequestDispatcher dispatcher = request.getRequestDispatcher( "notice.jsp");
+	            dispatcher.forward(request, response);
+	        }
 	    } else if(result == 0) {
             PrintWriter script = response.getWriter();
             script.println("<script>");

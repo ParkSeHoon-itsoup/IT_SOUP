@@ -90,7 +90,7 @@ public class UserDTO {
         return NAME;
     }
 
-    public void setNAME(String nAME) {
+    public static void setNAME(String nAME) {
         NAME = nAME;
     }
 
@@ -126,11 +126,11 @@ public class UserDTO {
         GRADE_CD = gRADE_CD;
     }
 
-    public String getLEVE() {
+    public String getLEVEL() {
         return LEVEL;
     }
 
-    public void setLEVE(String lEVEL) {
+    public static void setLEVEL(String lEVEL) {
         LEVEL = lEVEL;
     }
 
@@ -138,7 +138,7 @@ public class UserDTO {
         return CHG_PW_YN;
     }
 
-    public void setCHG_PW_YN(String cHG_PW_YN) {
+    public static void setCHG_PW_YN(String cHG_PW_YN) {
         CHG_PW_YN = cHG_PW_YN;
     }
 

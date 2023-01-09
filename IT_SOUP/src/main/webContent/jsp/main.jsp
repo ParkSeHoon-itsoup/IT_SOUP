@@ -204,6 +204,11 @@ function logincheck(){
     session = request.getSession();
     
     String ID = (String)session.getAttribute("ID");
+
+    String formNm2 = (String)request.getAttribute("formNm");
+    String naming = (String)request.getAttribute("naming");
+    
+    session.setAttribute("naming", naming);
     
     if( (String)request.getAttribute("ID") != null){
         ID =  (String)request.getAttribute("ID");
@@ -232,6 +237,7 @@ function logincheck(){
                     </ul>
                 </li>
             </ul>
+        </div>
         </div>
  </nav>
         <%
@@ -315,6 +321,9 @@ function logincheck(){
                     </div>
                     <input type="submit" class="btn btn-primary form-control" value="회원가입" style="width:540px;">
                 </form>
+                    <div>
+                         <a href="main.jsp?formNm=main" style="position:relative; bottom:-15px; left:250px;">홈으로</a> 
+                    </div>
             </div>
             </div>
             <%
@@ -345,6 +354,7 @@ function logincheck(){
                 </form>
             </div> 
         </div> 
+        </div>
             <%
         } else if("findPW".equals(formNm)){
             %>
@@ -365,10 +375,57 @@ function logincheck(){
                 </form>
             </div> 
         </div> 
+        </div>
+            <%
+        } else if("lostPw".equals(formNm)) {
+            %>
+        <script>
+            alert("임시비밀번호 발급 후 첫 로그인입니다. 비밀번호를 변경해주세요.")
+        </script>
+        <div class="container">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4">
+            <div class ="jumbotron" style="padding-top:20px;">
+                <form method = "post" action="changePwController" onsubmit="return logincheck()">
+                    <h3 style="text-align:center;">비밀번호 변경</h3>
+                    <div class ="form-group">
+                        <input type ="password" class="form-control" placeholder="변경 후 비밀번호" id="afterPw" name ="afterPw" maxlength='20' style="width:300px; position:relative; right:35px;">
+                    </div>
+                    <div class ="form-group">
+                        <input type ="password" class="form-control" placeholder="변경 후 비밀번호 재확인" id="confirmPw" name ="confirmPw" maxlength='20' style="width:300px; position:relative; right:35px;">
+                    </div>
+                    <input type="submit" class="btn btn-primary form-control" value="비밀번호 변경" style="width:300px;  position:relative; right:35px;">
+                </form>
+            </div> 
+        </div> 
+        </div>
+            <%
+        } else if("chgPwYn".equals(formNm)) {
+            %>        <script>
+            alert("회원가입 후 첫 로그인입니다. 비밀번호를 변경해주세요.")
+        </script>
+        <div class="container">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4">
+            <div class ="jumbotron" style="padding-top:20px;">
+                <form method = "post" action="changePwController">
+                    <h3 style="text-align:center;">비밀번호 변경</h3>
+                    <div class ="form-group">
+                        <input type ="password" class="form-control" placeholder="변경 후 비밀번호" id="afterPw" name ="afterPw" maxlength='20' style="width:300px; position:relative; right:35px;">
+                    </div>
+                    <div class ="form-group">
+                        <input type ="password" class="form-control" placeholder="변경 후 비밀번호 재확인" id="confirmPw" name ="confirmPw" maxlength='20' style="width:300px; position:relative; right:35px;">
+                    </div>
+                    <input type="submit" class="btn btn-primary form-control" value="비밀번호 변경" style="width:300px;  position:relative; right:35px;">
+                </form>
+            </div> 
+        </div> 
             <%
         } else {
             %>
         <div class="container">
+        <script>
+        </script>
         <div class="col-lg-4"></div>
         <div class="col-lg-4">
             <div class ="jumbotron" style="padding-top:20px;">
