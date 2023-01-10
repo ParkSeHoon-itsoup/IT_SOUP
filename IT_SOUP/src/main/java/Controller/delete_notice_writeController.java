@@ -39,7 +39,7 @@ public class delete_notice_writeController extends HttpServlet {
             PrintWriter script = response.getWriter();
             script.println("<script>");
             script.println("alert('공지사항 삭제에 실패하였습니다..')");
-            script.println("location.href='main.jsp?formNm=notice'");
+            script.println("location.href='notice.jsp?formNm=notice'");
             script.println("</script>");
         }
 	}

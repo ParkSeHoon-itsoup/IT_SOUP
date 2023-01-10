@@ -26,14 +26,8 @@ public class findController extends HttpServlet {
         String findNM = request.getParameter("NAME").replace(" ", "");
         String findSSN = request.getParameter("SSN").replace(" ", "");
         
-        UserDTO userDTO = new UserDTO();
-        userDTO.setNAME(findNM);
-        userDTO.setSSN(findSSN);
-        
         FindDAO findDAO = new FindDAO();
-    
-        String findID = findDAO.find(userDTO.getNAME(), userDTO.getSSN());
-
+        String findID = findDAO.find(findNM, findSSN);
         if("".equals(findID) || findID == null) {
                 PrintWriter script = response.getWriter();
                 script.println("<script>");
@@ -46,7 +40,7 @@ public class findController extends HttpServlet {
             PrintWriter script = response.getWriter();
             script.println("<script>");
             script.println("alert('아이디는" + request.getAttribute("findID") + "입니다.')");
-            script.println("location.href='main.jsp'");
+            script.println("location.href='login.jsp'");
             script.println("</script>");
         }
         

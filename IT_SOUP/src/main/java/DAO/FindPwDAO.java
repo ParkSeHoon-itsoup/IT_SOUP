@@ -32,7 +32,10 @@ public class FindPwDAO{
     }
     
     public String findPw(String Id, String Email) {
-        String SQL = "SELECT convert(AES_DECRYPT(unhex(PASSWORD), 'PASSWORD') using UTF8) AS PASSWORD FROM TB_EMP WHERE ID = trim(?) AND EMAIL = trim(?)";
+        String SQL = "SELECT convert(AES_DECRYPT(unhex(PASSWORD), 'PASSWORD') using UTF8) AS PASSWORD "
+                + "             FROM TB_EMP"
+                + "          WHERE ID = trim(?) "
+                + "               AND EMAIL = trim(?)";
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);

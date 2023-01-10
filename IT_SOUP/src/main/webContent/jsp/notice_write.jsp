@@ -13,7 +13,6 @@
 <style type="text/css">
 </style>
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
 <body> 
     <%
@@ -51,7 +50,7 @@
                         <ul class="dropdown-menu">
                             <li><a href="logoutController">로그아웃</a></li>
                             <li><a href="">내정보관리</a></li>
-                            <li> <a href="main.jsp?formNm=join" style="position:relative;">회원가입</a></li>
+                            <li> <a href="login.jsp?formNm=join" style="position:relative;">회원가입</a></li>
                         </ul>
                         <%
                         } else {

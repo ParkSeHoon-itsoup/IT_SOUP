@@ -66,7 +66,7 @@ public class joinController extends HttpServlet {
                     script.println("location.href='notice.jsp'");
                     script.println("</script>");
                     
-//                    RequestDispatcher dispatcher = request.getRequestDispatcher("main.jsp");
+//                    RequestDispatcher dispatcher = request.getRequestDispatcher("login.jsp");
 //                    dispatcher.forward(request, response);
                     System.out.println("회원가입성공");
                 }

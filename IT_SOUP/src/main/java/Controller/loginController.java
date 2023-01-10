@@ -36,33 +36,31 @@ public class loginController extends HttpServlet {
             PrintWriter script = response.getWriter();
             script.println("<script>");
             script.println("alert('이미 로그인 되어 있습니다.')");
-            script.println("location.href='main.jsp'");
+            script.println("location.href='login.jsp'");
             script.println("</script>");
         }
         
         String ID = request.getParameter("ID").replace(" ", "");
         String PASSWORD = request.getParameter("PASSWORD").replace(" ", "");
         
-        UserDTO userDTO = new UserDTO();
-        userDTO.setID(ID);
-        userDTO.setPASSWORD(PASSWORD);
-        
         LoginDAO loginDAO = new LoginDAO();
-	    int result = loginDAO.login(userDTO.getID(), userDTO.getPASSWORD());
+	    int result = loginDAO.login(ID, PASSWORD);
 	    
 	    if(result == 1) {
-	        session.setAttribute("ID", ID);
-            session.setAttribute("PASSWORD", PASSWORD);
-            
-	        String namingResult = loginDAO.naming(userDTO.getID());
-	        ID = (String)session.getAttribute("ID");
+	        UserDTO setID = loginDAO.setID(ID);
 	        
+	        UserDTO userDTO = new UserDTO();
+	        userDTO.setNO(setID.getNO());
+            userDTO.setNAME(setID.getNAME());
+            userDTO.setPASSWORD(setID.getPASSWORD());
+	        
+            session.setAttribute("PASSWORD", userDTO.getPASSWORD());
+            
 	        UserDTO  getEMP = loginDAO.getEMP(ID);
 	        String NAME = getEMP.getNAME();
 	        String CHG_PW_YN = getEMP.getCHG_PW_YN();
 	        String LEVEL = getEMP.getLEVEL();
 	        String MOD_DD = getEMP.getMOD_DD();
-	        int NO = getEMP.getNO();
 	        
             session.setAttribute("NO", userDTO.getNO());
             session.setAttribute("LEVEL", LEVEL);
@@ -70,22 +68,22 @@ public class loginController extends HttpServlet {
 	        String naming = NAME + " (" + ID + ")";
 	        session.setAttribute("naming", naming);
             session.setAttribute("LEVEL", LEVEL);
-	        
+    
 	        request.setAttribute("naming", naming);
             request.setAttribute("formNm", "notice");
 	        
+            session.setAttribute("ID", ID);
+            request.setAttribute("ID", ID);
+            
 	        if("".equals(MOD_DD) || null == MOD_DD  &&  "N".equals(CHG_PW_YN)) {
-                response.sendRedirect("main.jsp?formNm=chgPwYn&naming=" + naming);
+                response.sendRedirect("login.jsp?formNm=chgPwYn&ID=" + ID);
 	        } else if((!"".equals(MOD_DD) || null != MOD_DD) && "N".equals(CHG_PW_YN)) {
-	            response.sendRedirect("main.jsp?formNm=lostPw&naming=" + naming);
+	            response.sendRedirect("login.jsp?formNm=lostPw&ID=" + ID);
 	        } else {
-
 	                PrintWriter script = response.getWriter();
 	                script.println("<script>");
 	                script.println("location.href='notice.jsp'");
 	                script.println("</script>");
-//	            RequestDispatcher dispatcher = request.getRequestDispatcher( "notice.jsp");
-//	            dispatcher.forward(request, response);
 	        }
 	    } else if(result == 0) {
             PrintWriter script = response.getWriter();
@@ -97,12 +95,6 @@ public class loginController extends HttpServlet {
             PrintWriter script = response.getWriter();
             script.println("<script>");
             script.println("alert('존재하지 않는 아이디 입니다.')");
-            script.println("history.back()");
-            script.println("</script>");
-        } else if(result == -2) {
-            PrintWriter script = response.getWriter();
-            script.println("<script>");
-            script.println("alert('서버오류')");
             script.println("history.back()");
             script.println("</script>");
         }

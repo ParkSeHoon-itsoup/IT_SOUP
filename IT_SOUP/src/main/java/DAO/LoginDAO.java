@@ -24,7 +24,11 @@ public class LoginDAO {
     }
     
     public int login(String id, String password) {
-        String SQL = "SELECT convert(AES_DECRYPT(unhex(password), 'PASSWORD') using UTF8) as PASSWORD, NO, NAME FROM TB_EMP WHERE ID = ?";
+        String SQL = "SELECT convert(AES_DECRYPT(unhex(password), 'PASSWORD') using UTF8) as PASSWORD"
+                + "                        , NO"
+                + "                        , NAME "
+                + "              FROM TB_EMP"
+                + "            WHERE ID = ?";
         
         try {
             
@@ -42,7 +46,7 @@ public class LoginDAO {
         } catch(Exception e) {
             System.out.println("로그인 실패 : " + e);
         }
-        return -2;
+        return -1;
     }
     
     public String naming(String string) {
@@ -108,6 +112,31 @@ public class LoginDAO {
          }catch(Exception e) {
              System.out.println("관리자권한 찾기실패 : " + e);
          }
+        return null;
+    }
+    
+    public UserDTO setID(String ID) {
+        String SQL = "SELECT convert(AES_DECRYPT(unhex(password), 'PASSWORD') using UTF8) as PASSWORD"
+            + "                            , NO"
+            + "                            , NAME "
+            + "                  FROM TB_EMP"
+            + "                WHERE ID = ?";
+        
+        try {
+            PreparedStatement pstmt= conn.prepareStatement(SQL);
+            pstmt.setString(1, ID);
+            
+            rs = pstmt.executeQuery();
+            if(rs.next()) {
+                UserDTO userDTO = new UserDTO();
+                userDTO.setPASSWORD(rs.getString(1));
+                userDTO.setNO(rs.getInt(2));
+                userDTO.setNAME(rs.getString(3));
+                return userDTO;
+            }
+        } catch(Exception e) {
+            System.out.println("직원정보 검색 실패 : " + e);
+        }
         return null;
     }
 }
