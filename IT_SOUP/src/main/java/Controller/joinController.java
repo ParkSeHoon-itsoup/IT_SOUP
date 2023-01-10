@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import DTO.UserDTO;
 import DAO.UserDAO;
@@ -23,6 +24,10 @@ public class joinController extends HttpServlet {
         request.setCharacterEncoding("utf-8");
         response.setContentType("text/html; charset=utf-8");
         response.setCharacterEncoding("utf-8");
+        
+        HttpSession session = request.getSession();
+        String naming = (String)session.getAttribute("naming");
+        System.out.println("naming = "+ naming);
         
         String ID= request.getParameter("ID");
         String PASSWORD= request.getParameter("PASSWORD").replace(" ", "");
@@ -57,8 +62,8 @@ public class joinController extends HttpServlet {
                 } else {
                     PrintWriter script = response.getWriter();
                     script.println("<script>");
-                    script.println("alert('가입이 정상적으로 완료되었습니다. 로그인 화면에서 로그인 하세요.')");
-                    script.println("location.href='main.jsp'");
+                    script.println("alert('가입이 정상적으로 완료되었습니다.사용자에게 아이디/비밀번호를 안내해 주세요.')");
+                    script.println("location.href='notice.jsp'");
                     script.println("</script>");
                     
 //                    RequestDispatcher dispatcher = request.getRequestDispatcher("main.jsp");

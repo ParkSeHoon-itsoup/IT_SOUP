@@ -53,9 +53,6 @@ public class loginController extends HttpServlet {
 	    if(result == 1) {
 	        session.setAttribute("ID", ID);
             session.setAttribute("PASSWORD", PASSWORD);
-	        
-            System.out.println("ID = " + ID);
-            System.out.println("PASSWORD = " + PASSWORD);
             
 	        String namingResult = loginDAO.naming(userDTO.getID());
 	        ID = (String)session.getAttribute("ID");
@@ -65,8 +62,12 @@ public class loginController extends HttpServlet {
 	        String CHG_PW_YN = getEMP.getCHG_PW_YN();
 	        String LEVEL = getEMP.getLEVEL();
 	        String MOD_DD = getEMP.getMOD_DD();
+	        int NO = getEMP.getNO();
 	        
-	        String naming = namingResult + " (" + ID + ")";
+            session.setAttribute("NO", userDTO.getNO());
+            session.setAttribute("LEVEL", LEVEL);
+	        
+	        String naming = NAME + " (" + ID + ")";
 	        session.setAttribute("naming", naming);
             session.setAttribute("LEVEL", LEVEL);
 	        
@@ -76,10 +77,15 @@ public class loginController extends HttpServlet {
 	        if("".equals(MOD_DD) || null == MOD_DD  &&  "N".equals(CHG_PW_YN)) {
                 response.sendRedirect("main.jsp?formNm=chgPwYn&naming=" + naming);
 	        } else if((!"".equals(MOD_DD) || null != MOD_DD) && "N".equals(CHG_PW_YN)) {
-	            response.sendRedirect("main.jsp?formNm=lostPwYn&naming=" + naming);
+	            response.sendRedirect("main.jsp?formNm=lostPw&naming=" + naming);
 	        } else {
-	            RequestDispatcher dispatcher = request.getRequestDispatcher( "notice.jsp");
-	            dispatcher.forward(request, response);
+
+	                PrintWriter script = response.getWriter();
+	                script.println("<script>");
+	                script.println("location.href='notice.jsp'");
+	                script.println("</script>");
+//	            RequestDispatcher dispatcher = request.getRequestDispatcher( "notice.jsp");
+//	            dispatcher.forward(request, response);
 	        }
 	    } else if(result == 0) {
             PrintWriter script = response.getWriter();

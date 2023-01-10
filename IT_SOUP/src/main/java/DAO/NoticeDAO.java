@@ -53,7 +53,6 @@ public class NoticeDAO {
                 + "         , N_TITLE"
                 + "         , N_CONTENT"
                 + "         , N_DATE"
-                + "         , DEL_YN"
                 + "           ) "
                 + "           VALUES "
                 + "          ((SELECT IFNULL(MAX(N_NO), 0) + 1 "
@@ -61,8 +60,7 @@ public class NoticeDAO {
                 + "        , TRIM(?)"
                 + "        , TRIM(?)"
                 + "        , TRIM(?)"
-                + "        , CURRENT_TIMESTAMP()"
-                + "        , 'N')"
+                + "        , CURRENT_DATE())"
                                ;
         
         try {
@@ -80,8 +78,7 @@ public class NoticeDAO {
     
     public int listCount() {
         String SQL = "SELECT COUNT(*) "
-                + "              FROM TB_NOTICE "
-                + "            WHERE DEL_YN = 'N'";
+                + "              FROM TB_NOTICE ";
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
@@ -91,7 +88,7 @@ public class NoticeDAO {
                 return rs.getInt(1);
             }
         } catch(Exception e) {
-            System.out.println("게시글 수 찾기 실패 : " + e);
+            System.out.println("공지사항 수 찾기 실패 : " + e);
         }
         return -1;
     }
@@ -125,7 +122,6 @@ public class NoticeDAO {
                 + "             FROM TB_NOTICE A"
                 + "                      , TB_EMP B"
                 + "          WHERE A.NO = B.NO"
-                + "                AND A.DEL_YN = 'N'"
                 + "           ORDER BY A.N_NO DESC"
                 + "              LIMIT ?"
                 + "                     , 10"
@@ -198,12 +194,19 @@ public class NoticeDAO {
         return null;
     }
     
-    public NoticeDTO notice_read(String ID) {
-        String SQL = "SELECT A.N_TITLE, B.NAME, A.N_DATE, A.N_CONTENT FROM TB_NOTICE A, TB_EMP B WHERE A.NO = B.NO AND A.N_NO=?";
+    public NoticeDTO notice_read(int N_NO) {
+        String SQL = "SELECT A.N_TITLE"
+                + "                       , B.NAME"
+                + "                       , A.N_DATE"
+                + "                       , A.N_CONTENT"
+                + "                FROM TB_NOTICE A"
+                + "                          , TB_EMP B "
+                + "             WHERE A.NO = B.NO"
+                + "                   AND A.N_NO=?";
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
-            pstmt.setString(1, ID);
+            pstmt.setInt(1, N_NO);
            
             rs = pstmt.executeQuery();
             if(rs.next()) {
@@ -219,5 +222,49 @@ public class NoticeDAO {
             System.out.println("공지사항 글 찾기 실패 : " + e);
         }
         return null;
+    }
+    
+    public int mod_notice_write(int n_NO, String N_TITLE, String N_CONTENT, int NO) {
+
+        System.out.println("N_TITLE = " + N_TITLE);
+        System.out.println("N_CONTENT = " + N_CONTENT);
+        System.out.println("NO = " + NO);
+        System.out.println("n_NO = " + n_NO);
+        
+        String SQL = "UPDATE TB_NOTICE "
+                + "                   SET N_TITLE = ?"
+                + "                        , N_CONTENT = ?"
+                + "                        , MOD_DATE = current_date()"
+                + "                        , MOD_EMP_NO = ?"
+                + "           WHERE N_NO = ?";
+        
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(SQL);
+            pstmt.setString(1, N_TITLE);
+            pstmt.setString(2, N_CONTENT);
+            pstmt.setInt(3, NO);
+            pstmt.setInt(4, n_NO);
+            
+            return pstmt.executeUpdate();
+        } catch(Exception e) {
+            System.out.println("공지사항 글 수정 실패 : " + e);
+        }
+        return -1;
+    }
+    
+    public int delete_notice_write(int N_NO) {
+        String SQL = "DELETE"
+                + "              FROM TB_NOTICE"
+                + "            WHERE N_NO = ?";
+        
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(SQL);
+            pstmt.setInt(1, N_NO);
+            
+            return pstmt.executeUpdate();
+        } catch(Exception e) {
+            System.out.println("공지사항 글삭제 실패 : " + e);
+        }
+        return -1;
     }
 }

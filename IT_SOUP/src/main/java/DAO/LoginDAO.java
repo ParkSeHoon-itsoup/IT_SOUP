@@ -68,6 +68,7 @@ public class LoginDAO {
                 + "                        , CHG_PW_YN"
                 + "                        , LEVEL"
                 + "                        , MOD_DD"
+                + "                        , NO"
                 + "              FROM TB_EMP "
                 + "            WHERE ID = ?";
 
@@ -82,6 +83,7 @@ public class LoginDAO {
                  userDTO.setCHG_PW_YN(rs.getString(2));
                  userDTO.setLEVEL(rs.getString(3));
                  userDTO.setMOD_DD(rs.getString(4));
+                 userDTO.setNO(rs.getInt(5));
                  return userDTO;
              }
          }catch(Exception e) {

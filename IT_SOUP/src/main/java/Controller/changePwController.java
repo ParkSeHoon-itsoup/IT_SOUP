@@ -29,11 +29,6 @@ public class changePwController extends HttpServlet {
 	    
 	    String afterPw = request.getParameter("afterPw").replace(" ", "");
 	    String confirmPw = request.getParameter("confirmPw").replace(" ", ""); 
-
-        System.out.println("ID = " + ID);
-	    System.out.println("PASSWORD = " + "(" + PASSWORD + ")");
-        System.out.println("afterPw = " + "(" + afterPw +")");
-        System.out.println("confirmPw = " + "(" + confirmPw+")");
 	    
 	    if(afterPw.equals(PASSWORD)){
             PrintWriter script = response.getWriter();
@@ -58,7 +53,7 @@ public class changePwController extends HttpServlet {
 	            PrintWriter script = response.getWriter();
 	            script.println("<script>");
 	            script.println("alert('비밀번호가 변경되었습니다.')");
-	            script.println("location.href='main.jsp?formNm=notice'");
+	            script.println("location.href='notice.jsp'");
 	            script.println("</script>");
 	        }else {
 	            PrintWriter script = response.getWriter();

@@ -73,7 +73,11 @@ public class FindPwDAO{
     }
     
     public int updateTmpPw(String tmpPw, String Id, String Email) {
-        String SQL = "UPDATE TB_EMP SET PASSWORD = hex(aes_encrypt(?,'PASSWORD')) WHERE ID = ? AND EMAIL = ?";
+        String SQL = "UPDATE TB_EMP"
+                + "                   SET PASSWORD = hex(aes_encrypt(?,'PASSWORD'))"
+                + "                         , CHG_PW_YN = 'N'" 
+                + "            WHERE ID = ?"
+                + "                  AND EMAIL = ?";
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);

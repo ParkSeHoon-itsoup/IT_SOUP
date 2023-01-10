@@ -25,12 +25,10 @@
         String formNm = request.getParameter("formNm");
             
         session = request.getSession();
-        
         String naming = (String)session.getAttribute("naming");
-        String LEVEL = (String)session.getAttribute("LEVEL");
-        
         String ID = (String)session.getAttribute("ID");
         String NAME = (String)session.getAttribute("NAME");
+        String LEVEL = (String)session.getAttribute("LEVEL");
 
         if( (String)request.getAttribute("ID") != null){
             ID =  (String)request.getAttribute("ID");
@@ -58,10 +56,24 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" 
                             data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%=naming %><span class="caret"></span></a>
+                        <%
+                        if("01".equals(LEVEL) || "02".equals(LEVEL)){
+                        %>
+                        <ul class="dropdown-menu">
+                            <li><a href="logoutController">로그아웃</a></li>
+                            <li><a href="">내정보관리</a></li>
+                            <li> <a href="main.jsp?formNm=join" style="position:relative;">회원가입</a></li>
+                        </ul>
+                        <%
+                        } else {
+                        %>
                         <ul class="dropdown-menu">
                             <li><a href="logoutController">로그아웃</a></li>
                             <li><a href="">내정보관리</a></li>
                         </ul>
+                        <%
+                        }
+                        %>
                     </li>
                 </ul>
             </div>
@@ -69,7 +81,6 @@
      </nav>
      <div>
      </div>
-     
          <div class="container">
         <div class="row">
             <table class="table table-striped" style="text-align:enter; border:1px solid #dddddd;'">
@@ -83,7 +94,6 @@
                 </thead>
                 <tbody>
                 <%
-                
                    NoticeDAO noticeDAO = new NoticeDAO();
                    int cnt = noticeDAO.listCount();
                    ArrayList<NoticeDTO> list = noticeDAO.getList(strartRow);
@@ -92,9 +102,9 @@
                 %>
                     <tr>
                         <td style="text-align:center"><%=list.get(i).getN_NO() %></td>
-                        <td style="text-align:center"><a href="notice_write.jsp?N_NO=<%=list.get(i).getN_NO() %>&formNm=notice_read"><%=list.get(i).getN_TITLE().replaceAll(" ", "&nbsp;").replaceAll("<", "&alt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>") %></a></td>
+                        <td style="text-align:left"><a href="notice_write.jsp?N_NO=<%=list.get(i).getN_NO() %>&formNm=notice_read"><%=list.get(i).getN_TITLE().replaceAll(" ", "&nbsp;").replaceAll("<", "&alt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>") %></a></td>
                         <td style="text-align:center"><%=list.get(i).getNAME() %></td>
-                        <td style="text-align:center"><%=list.get(i).getN_DATE().substring(0,11) + list.get(i).getN_DATE().substring(11, 13) + "시 " + list.get(i).getN_DATE().substring(14, 16) + "분 " %></td>
+                        <td style="text-align:center"><%=list.get(i).getN_DATE().substring(0,11)%></td>
                     </tr>
                 <%
                    }
@@ -131,7 +141,7 @@
             
             if("01".equals(LEVEL) || "02".equals(LEVEL)){
             %>
-             <a href="notice_write.jsp?naming=<%= naming %>&formNm='notice_write'" class="btn btn-primary pull-right">글쓰기</a>
+             <a href="notice_write.jsp?naming=<%= naming %>&formNm=notice_write" class="btn btn-primary pull-right">글쓰기</a>
              <%
             }
              %> 
