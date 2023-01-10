@@ -26,9 +26,9 @@
             
         session = request.getSession();
         String naming = (String)session.getAttribute("naming");
-        String ID = (String)session.getAttribute("ID");
-        String NAME = (String)session.getAttribute("NAME");
-        String LEVEL = (String)session.getAttribute("LEVEL");
+        String ID           = (String)session.getAttribute("ID");
+        String NAME   = (String)session.getAttribute("NAME");
+        String LEVEL   = (String)session.getAttribute("LEVEL");
 
         if( (String)request.getAttribute("ID") != null){
             ID =  (String)request.getAttribute("ID");

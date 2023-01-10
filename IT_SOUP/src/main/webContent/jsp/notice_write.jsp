@@ -18,12 +18,10 @@
 <body> 
     <%
         String formNm = request.getParameter("formNm");
-        System.out.println("formNm = " + formNm);
         
         session = request.getSession();
         
         int NO = (int)session.getAttribute("NO");
-        System.out.println("NO = " + NO);
         String ID = (String)session.getAttribute("ID");
         String naming = (String)session.getAttribute("naming");
         
@@ -161,9 +159,20 @@
                     </tr>
                 </tbody>
                 </table>
+                <%
+                int NNO = notice_read.getNO();
+                if("01".equals(LEVEL) ||("02".equals(LEVEL) && NO == NNO)){
+                %>
              <a onClick="return confirm('정말로 삭제하시겠습니까?');" href="delete_notice_writeController?N_NO=<%=N_NO %>" class="btn btn-primary" style="position:relative; left:1115px;">삭제</a>
-             <a href="notice_write.jsp?N_NO=<%=N_NO %>&formNm=mod_notice_write" class="btn btn-primary pull-right" style="position:relative; right:75px;">수정</a>
-             <a href="notice.jsp" class="btn btn-primary pull-right" style="position:relative; right:100px;" >목록</a>
+             <a href="notice_write.jsp?N_NO=<%=N_NO %>&formNm=mod_notice_write" class="btn btn-primary pull-right" style="position:relative; right:65px;">수정</a>
+             <a href="notice.jsp" class="btn btn-primary pull-right" style="position:relative; right:75px;">목록</a>
+             <%
+                } else {
+             %>
+             <a href="notice.jsp" class="btn btn-primary pull-right">목록</a>
+             <%
+                }
+             %>
             </form>
         </div>
     </div>

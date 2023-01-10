@@ -31,12 +31,10 @@ public class notice_writeController extends HttpServlet {
         String N_TITLE = request.getParameter("N_TITLE");
         String N_CONTENT = request.getParameter("N_CONTENT");
         
-        String formNm = request.getParameter("formNm");
-        
         if((null == N_TITLE || "".equals(N_TITLE)) ||(null == N_CONTENT || "".equals(N_CONTENT))) {
             PrintWriter script = response.getWriter();
             script.println("<script>");
-            script.println("alert('입력이 안 된 사항이 있습니다.')>");
+            script.println("alert('입력이 안 된 사항이 있습니다.')");
            script.println("history.back()");
             script.println("</script>");
         } else{
@@ -46,16 +44,16 @@ public class notice_writeController extends HttpServlet {
             
             int notice_write = noticeDAO.write(NO, N_TITLE, N_CONTENT);
             
-            if(notice_write == 1) {
+            if(notice_write ==1) {
                 PrintWriter script = response.getWriter();
                 script.println("<script>");
-                script.println("alert('새 공지사항을 등록하였습니다.')>");
+                script.println("alert('새로운 공지사항을 등록하였습니다.')");
                 script.println("location.href='notice.jsp'");
                 script.println("</script>");
             } else {
                 PrintWriter script = response.getWriter();
                 script.println("<script>");
-                script.println("alert('공지사항  등록에 실패하였습니다.')>");
+                script.println("alert('공지사항  등록에 실패하였습니다.')");
                 script.println("history.back()");
                 script.println("</script>");
             }

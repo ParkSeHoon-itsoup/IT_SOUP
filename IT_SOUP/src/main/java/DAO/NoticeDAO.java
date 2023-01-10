@@ -196,13 +196,14 @@ public class NoticeDAO {
     
     public NoticeDTO notice_read(int N_NO) {
         String SQL = "SELECT A.N_TITLE"
-                + "                       , B.NAME"
-                + "                       , A.N_DATE"
-                + "                       , A.N_CONTENT"
-                + "                FROM TB_NOTICE A"
-                + "                          , TB_EMP B "
-                + "             WHERE A.NO = B.NO"
-                + "                   AND A.N_NO=?";
+                + "                        , B.NAME"
+                + "                        , A.N_DATE"
+                + "                        , A.N_CONTENT"
+                + "                        , A.NO"
+                + "             FROM TB_NOTICE A"
+                + "                       , TB_EMP B "
+                + "          WHERE A.NO = B.NO"
+                + "                AND A.N_NO=?";
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
@@ -215,6 +216,7 @@ public class NoticeDAO {
                 noticeDTO.setNAME(rs.getString(2));
                 noticeDTO.setN_DATE(rs.getString(3));
                 noticeDTO.setN_CONTENT(rs.getString(4));
+                noticeDTO.setNO(rs.getInt(5));
                 
                 return noticeDTO;
             }
