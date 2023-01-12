@@ -8,9 +8,21 @@ public class NoticeDTO {
     private String N_CONTENT;
     private String N_DATE;
     private String D_DATE;
+    private String ID;
+    private int REPLY;
+    private int RE_NO;
+
 
     public NoticeDTO() {
         super();
+    }
+    
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String iD) {
+        ID = iD;
     }
 
     public int getN_NO() {
@@ -67,5 +79,21 @@ public class NoticeDTO {
 
     public void setD_DATE(String d_DATE) {
         D_DATE = d_DATE;
+    }
+
+    public int getREPLY() {
+        return REPLY;
+    }
+
+    public void setREPLY(int rEPLY) {
+        REPLY = rEPLY;
+    }
+
+    public int getRE_NO() {
+        return RE_NO;
+    }
+
+    public void setRE_NO(int rE_NO) {
+        RE_NO = rE_NO;
     }
 }

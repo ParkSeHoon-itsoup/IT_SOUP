@@ -16,13 +16,24 @@
         color : #000000;
         text-decoration:none;
     }
+    a:active{color:red;}
 </style>
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
 </head>
 <body> 
     <%
+        request.setCharacterEncoding("utf-8");
+        response.setContentType("text/html; charset=utf-8");
+        response.setCharacterEncoding("utf-8");
+    
         String formNm = request.getParameter("formNm");
-            
+        String searchField = request.getParameter("searchField");
+        String searchText = request.getParameter("searchText");
+       
+       System.out.println("formNm = " + formNm);
+       System.out.println("searchField = " + searchField);
+       System.out.println("searchText = " + searchText);
+      
         session = request.getSession();
         String naming = (String)session.getAttribute("naming");
         String ID           = (String)session.getAttribute("ID");
@@ -93,17 +104,91 @@
                 </thead>
                 <tbody>
                 <%
+                if("searchList".equals(formNm)){
+                    NoticeDAO noticeDAO = new NoticeDAO();
+                     ArrayList<NoticeDTO> searchList = noticeDAO.getsearchList(searchField, searchText, strartRow);
+                     
+                     System.out.println("currentPage = " + currentPage);
+                     System.out.println("strartRow = " + strartRow);
+                     
+                     for(int i=0; i<searchList.size(); i++){
+                %>
+                    <tr>
+                        <td style="text-align:center"><%=searchList.get(i).getN_NO() %></td>
+                        <td style="text-align:left"><a href="notice_write.jsp?N_NO=<%=searchList.get(i).getN_NO() %>&REPLY=<%=searchList.get(i).getREPLY() %>&RE_NO=<%=searchList.get(i).getRE_NO() %>&formNm=notice_read"><%=searchList.get(i).getN_TITLE().replaceAll(" ", "&nbsp;").replaceAll("<", "&alt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>") %></a></td>
+                        <td style="text-align:center"><%=searchList.get(i).getNAME() + "(" + searchList.get(i).getID()+ ")" %></td>
+                        <td style="text-align:center"><%=searchList.get(i).getN_DATE().substring(0,4) + "년 "  + searchList.get(i).getN_DATE().substring(5,7) + "월 " + searchList.get(i).getN_DATE().substring(8,10) + "일"%></td>
+                    </tr>
+                <%
+                   }
+                %>
+                </tbody>
+            </table>
+                <%
+                       int cnt = noticeDAO.listCount();
+                       int pageCount = cnt/10 + (cnt*10==0?0:1);
+                       int pageBlock = 10;
+                       int startPage = pageNumber;
+                       int endPage = startPage + pageBlock-1;
+                       
+                       if(endPage > pageCount){
+                           endPage = pageCount;
+                       }
+                %>
+                       <a href="notice.jsp?pageNumber=1"onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''">[처음]</a>
+                <%
+                if(startPage>pageBlock){
+                %>
+                       <a href="notice.jsp?pageNumber=<%=startPage-pageBlock %>"  onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''" >[이전]</a>
+                <%
+                       }
+                
+                      for(int idx=startPage; idx<=endPage; idx++){
+                %>
+                        <a href="notice.jsp?pageNumber=<%=idx  %>" onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''"  style="active;"><%=idx %></a>
+                <%
+                      }
+                
+                     if(endPage<pageCount){
+                %>
+                         <a href="notice.jsp?pageNumber=<%=startPage+pageBlock %>"onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''">[다음]</a>
+                         <a href="notice.jsp?pageNumber=<%=pageCount %>"onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''" style="">[마지막]</a>
+                        
+            <%
+                 } 
+            if("01".equals(LEVEL) || "02".equals(LEVEL)){
+            %>
+             <a href="notice_write.jsp?naming=<%= naming %>&formNm=notice_write" class="btn btn-primary pull-right">글쓰기</a>
+             <a href="notice.jsp" class="btn btn-primary pull-right">목록</a>
+             <%
+            }
+            %>
+            <form method="post" name="search" action="notice.jsp?formNm=searchList">
+	            <table class="pull-right">
+		            <tr>
+		                <td><select class="form-control" name="searchField">
+		                         <option value="N_TITLE">제목</option>
+		                         <option value="N_CONTENT">내용</option>
+		                         <option value="TOTAL">제목  + 내용</option>
+		                         </select></td>
+		                <td><input type="text" class="form-control" placeholder="검색어 입력" name="searchText" maxlength="100"></td>
+		                <td><button type="submit" class="btn btn-primary">검색</button></td>
+		            </tr>
+	           </table>
+           </form>
+             <%
+                } else {
                    NoticeDAO noticeDAO = new NoticeDAO();
                    int cnt = noticeDAO.listCount();
                    ArrayList<NoticeDTO> list = noticeDAO.getList(strartRow);
                    
                    for(int i=0; i<list.size(); i++){
-                %>
+                   %>
                     <tr>
                         <td style="text-align:center"><%=list.get(i).getN_NO() %></td>
-                        <td style="text-align:left"><a href="notice_write.jsp?N_NO=<%=list.get(i).getN_NO() %>&formNm=notice_read"><%=list.get(i).getN_TITLE().replaceAll(" ", "&nbsp;").replaceAll("<", "&alt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>") %></a></td>
-                        <td style="text-align:center"><%=list.get(i).getNAME() %></td>
-                        <td style="text-align:center"><%=list.get(i).getN_DATE().substring(0,11)%></td>
+                        <td style="text-align:left"><a href="notice_write.jsp?N_NO=<%=list.get(i).getN_NO() %>&REPLY=<%=list.get(i).getREPLY() %>&RE_NO=<%=list.get(i).getRE_NO() %>&formNm=notice_read"><%=list.get(i).getN_TITLE().replaceAll(" ", "&nbsp;").replaceAll("<", "&alt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>") %></a></td>
+                        <td style="text-align:center"><%=list.get(i).getNAME() + "(" + list.get(i).getID()+ ")" %></td>
+                        <td style="text-align:center"><%=list.get(i).getN_DATE().substring(0,4) + "년 "  + list.get(i).getN_DATE().substring(5,7) + "월 " + list.get(i).getN_DATE().substring(8,10) + "일"%></td>
                     </tr>
                 <%
                    }
@@ -113,38 +198,59 @@
             <%
                    int pageCount = cnt/10 + (cnt*10==0?0:1);
                    int pageBlock = 10;
-                   int startPage = ((pageNumber-1)/pageBlock)*pageBlock+1;
+                   int startPage = pageNumber;
                    int endPage = startPage + pageBlock-1;
                    
                    if(endPage > pageCount){
                        endPage = pageCount;
                    }
-
-                  if(startPage>pageBlock){
             %>
-                   <a href="notice.jsp?pageNumber=<%=startPage-pageBlock %>" >[이전]</a>
+                   <a href="notice.jsp?pageNumber=1"onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''">[처음]</a>
+            <%
+            if(startPage>pageBlock){
+            %>
+                   <a href="notice.jsp?pageNumber=<%=startPage-pageBlock %>"  onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''" >[이전]</a>
             <%
                    }
             
                   for(int idx=startPage; idx<=endPage; idx++){
             %>
-                    <a href="notice.jsp?pageNumber=<%=idx  %>"><%=idx %></a>
+<%--                     <a href="notice.jsp?pageNumber=<%=idx  %>" onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''"  style="active;"><%=idx %></a> --%>
+                    <a href="notice.jsp" onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''"  style="active;"><%=idx %></a>
             <%
                   }
             
                  if(endPage<pageCount){
             %>
-                     <a href="notice.jsp?pageNumber=<%=startPage+pageBlock %>">[다음]</a>
+                     <a href="notice.jsp?pageNumber=<%=startPage+pageBlock %>"onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''">[다음]</a>
+                     <a href="notice.jsp?pageNumber=<%=pageCount %>"onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''" style="">[마지막]</a>
+
             <%
                  } 
-            
             if("01".equals(LEVEL) || "02".equals(LEVEL)){
             %>
              <a href="notice_write.jsp?naming=<%= naming %>&formNm=notice_write" class="btn btn-primary pull-right">글쓰기</a>
+             <a href="notice.jsp" class="btn btn-primary pull-right">목록</a>
              <%
             }
-             %> 
-        </div>
+            %>
+            <form method="post" name="search" action="notice.jsp?formNm=searchList">
+            <table class="pull-right">
+            <tr>
+                <td><select class="form-control" name="searchField">
+                         <option value="N_TITLE">제목</option>
+                         <option value="N_CONTENT">내용</option>
+                         <option value="TOTAL">제목  + 내용</option>
+                </select></td>
+                <td><input type="text" class="form-control" placeholder="검색어 입력" name="searchText" maxlength="100"></td>
+                <td><button type="submit" class="btn btn-primary">검색</button></td>
+            </tr>
+        </table>
+    </form>
+       <%
+        }
+        %>
+      </div>
     </div>
         <script src="js/bootstrap.js"></script>
 </body>

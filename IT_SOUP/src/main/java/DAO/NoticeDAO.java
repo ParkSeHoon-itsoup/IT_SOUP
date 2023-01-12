@@ -53,6 +53,8 @@ public class NoticeDAO {
                 + "         , N_TITLE"
                 + "         , N_CONTENT"
                 + "         , N_DATE"
+                + "         , REPLY"
+                + "         , RE_NO"
                 + "           ) "
                 + "           VALUES "
                 + "          ((SELECT IFNULL(MAX(N_NO), 0) + 1 "
@@ -60,7 +62,9 @@ public class NoticeDAO {
                 + "        , TRIM(?)"
                 + "        , TRIM(?)"
                 + "        , TRIM(?)"
-                + "        , CURRENT_DATE())"
+                + "        , CURRENT_DATE()"
+                + "        , 0"
+                + "        , 0)"
                                ;
         
         try {
@@ -114,15 +118,20 @@ public class NoticeDAO {
     
     public ArrayList<NoticeDTO> getList(int startRow){
         String SQL = "SELECT A.N_NO"
-                + "                       , A.NO"
-                + "                       , B.NAME"
-                + "                       , A.N_TITLE"
-                + "                       , A.N_CONTENT"
-                + "                       , A.N_DATE"
+                + "                        , A.NO"
+                + "                        , B.NAME"
+                + "                        , A.N_TITLE"
+                + "                        , A.N_CONTENT"
+                + "                        , A.N_DATE"
+                + "                        , B.ID"
+                + "                        , A.REPLY"
+                + "                        , A.RE_NO"
                 + "             FROM TB_NOTICE A"
-                + "                      , TB_EMP B"
+                + "                       , TB_EMP B"
                 + "          WHERE A.NO = B.NO"
                 + "           ORDER BY A.N_NO DESC"
+                + "                             , A.REPLY"
+                + "                             , A.RE_NO"
                 + "              LIMIT ?"
                 + "                     , 10"
                 ;
@@ -131,7 +140,7 @@ public class NoticeDAO {
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
-            pstmt.setInt(1, startRow -1);
+            pstmt.setInt(1, startRow -1*10);
             
             rs = pstmt.executeQuery();
             
@@ -143,6 +152,9 @@ public class NoticeDAO {
                noticeDTO.setN_TITLE(rs.getString(4));
                noticeDTO.setN_CONTENT(rs.getString(5));
                noticeDTO.setN_DATE(rs.getString(6));
+               noticeDTO.setID(rs.getString(7));
+               noticeDTO.setREPLY(rs.getInt(8));
+               noticeDTO.setRE_NO(rs.getInt(9));
                list.add(noticeDTO);
            }
         } catch(Exception e) {
@@ -194,20 +206,27 @@ public class NoticeDAO {
         return null;
     }
     
-    public NoticeDTO notice_read(int N_NO) {
+    public NoticeDTO notice_read(int N_NO, int REPLY,  int RE_NO) {
         String SQL = "SELECT A.N_TITLE"
                 + "                        , B.NAME"
                 + "                        , A.N_DATE"
                 + "                        , A.N_CONTENT"
                 + "                        , A.NO"
+                + "                        , B.ID"
+                + "                        , A.REPLY"
+                + "                        , A.RE_NO"
                 + "             FROM TB_NOTICE A"
                 + "                       , TB_EMP B "
                 + "          WHERE A.NO = B.NO"
-                + "                AND A.N_NO=?";
+                + "                AND A.N_NO = ?"
+                + "                AND A.REPLY = ?"
+                + "                AND A.RE_NO = ?";
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
             pstmt.setInt(1, N_NO);
+            pstmt.setInt(2, REPLY);
+            pstmt.setInt(3, RE_NO);
            
             rs = pstmt.executeQuery();
             if(rs.next()) {
@@ -217,6 +236,9 @@ public class NoticeDAO {
                 noticeDTO.setN_DATE(rs.getString(3));
                 noticeDTO.setN_CONTENT(rs.getString(4));
                 noticeDTO.setNO(rs.getInt(5));
+                noticeDTO.setID(rs.getString(6));
+                noticeDTO.setREPLY(rs.getInt(7));
+                noticeDTO.setRE_NO(rs.getInt(8));
                 
                 return noticeDTO;
             }
@@ -268,5 +290,102 @@ public class NoticeDAO {
             System.out.println("공지사항 글삭제 실패 : " + e);
         }
         return -1;
+    }
+    
+    public ArrayList<NoticeDTO> getsearchList(String searchField, String searchText, int startRow){
+        ArrayList<NoticeDTO> searchList = new ArrayList<NoticeDTO>();
+        
+        String SQL = "SELECT A.NO"
+                + "                        , A.N_TITLE"
+                + "                        , B.NAME"
+                + "                        , B.ID"
+                + "                        , A.N_DATE"
+                + "             FROM TB_NOTICE A"
+                + "                       , TB_EMP B"
+                + "           WHERE A.NO = B.NO"
+                + "                 AND (('N_TITLE' = ? AND N_TITLE LIKE ?)"
+                + "                            OR"
+                + "                           ('N_CONTENT' = ? AND N_CONTENT LIKE ?)"
+                + "                            OR"
+                + "                           ('TOTAL' = ? AND (N_TITLE LIKE ? OR N_CONTENT LIKE ?))"
+                + "                          )"
+                + "      ORDER BY A.N_NO DESC "
+                + "                        , A.REPLY"
+                + "                        , A.RE_NO DESC"
+                + "              LIMIT ? "
+                + "                      , 10";
+            try {
+            PreparedStatement pstmt = conn.prepareStatement(SQL);
+                pstmt.setString(1, searchField);
+                pstmt.setString(2, "%" +searchText + "%");
+                pstmt.setString(3, searchField);
+                pstmt.setString(4, "'%" + searchText + "%'");
+                pstmt.setString(5, searchField);
+                pstmt.setString(6, "'%" + searchText + "%'");
+                pstmt.setString(7, "'%" + searchText + "%'");
+                pstmt.setInt(8, startRow -1);
+            
+            rs = pstmt.executeQuery();
+
+            while(rs.next()) {
+                NoticeDTO list = new NoticeDTO();
+                list.setN_NO(rs.getInt(1));
+                list.setN_TITLE(rs.getString(2));
+                list.setNAME(rs.getString(3));
+                list.setID(rs.getString(4));
+                list.setN_DATE(rs.getString(5));
+                searchList.add(list);
+            }
+        } catch(Exception e) {
+            System.out.println("공지사항 검색 실패 : " + e);
+        }
+        return searchList;
+    }
+    
+    public int reply_write(int NO,int N_NO, int REPLY,  int RE_NO, String R_TITLE, String R_CONTENT) {
+         String SQL = "INSERT INTO TB_NOTICE "
+                 + "           (N_NO"
+                 + "          , REPLY"
+                 + "          , RE_NO"
+                 + "          , NO"
+                 + "          , N_TITLE"
+                 + "          , N_CONTENT"
+                 + "          , N_DATE"
+                 + "           )"
+                 + "           VALUES"
+                 + "          (?"
+                 + "          ,(SELECT B.REPLY + 1"
+                 + "               FROM TB_NOTICE B"
+                 + "            WHERE N_NO = ?"
+                 + "                  AND B.REPLY = ?"
+                 + "                  AND B.RE_NO = ?"
+                 + "             )"
+                 + "           , (SELECT (IFNULL(MAX(RE_NO) + 1, 1)) "
+                 + "                FROM TB_NOTICE C"
+                 + "              WHERE C.N_NO = ?"
+                 + "                     AND C.REPLY = ? + 1)"
+                 + "        , ?"
+                 + "        , ?"
+                 + "        , ?"
+                 + "        , CURRENT_DATE()"
+                 + "        )";
+         
+         try {
+             PreparedStatement pstmt = conn.prepareStatement(SQL);
+             pstmt.setInt(1,N_NO);
+             pstmt.setInt(2, N_NO);
+             pstmt.setInt(3, REPLY);
+             pstmt.setInt(4, RE_NO);
+             pstmt.setInt(5, N_NO);
+             pstmt.setInt(6, REPLY);
+             pstmt.setInt(7, NO);
+             pstmt.setString(8, R_TITLE);
+             pstmt.setString(9, R_CONTENT);
+             
+             return pstmt.executeUpdate();
+         } catch(Exception e) {
+             System.out.println("댓글 작성 실패 : " + e);
+         }
+         return -1;
     }
 }
