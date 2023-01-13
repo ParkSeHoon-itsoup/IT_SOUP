@@ -14,6 +14,8 @@
 </style>
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
 <script>
+var count = 1;  //파일업로드 행추가용 전역변수
+
 function check(){
     var getN_TITLE = $("#N_TITLE").val();
     var getN_CONTENT = $("#N_CONTENT").val();
@@ -47,7 +49,36 @@ function check(){
         $("#R_CONTENT").focus();
         return false;
     }
+}
+
+function addRow(){
+	var dynamicTable = document.getElementById('dynamic_table');
+	var newRow = dynamicTable.insertRow();
+	var cell1 = newRow.insertCell();
+    var cell2 = newRow.insertCell();
     
+    cell1.innerHTML = '<input type="checkbox" name="checkboxObj"/>';
+    cell2.innerHTML = '<input type="file" name="fileupload' + count+'" size="70" onchange="checkSize(this)">';
+    count++
+}
+
+function checkSize(input){
+	if(input.files && input.files[0].size > (5*1024*1024)){
+		alert("파일 사이즈가 5MB를 초과하였습니다.");
+	}
+}
+
+function deleteRow() {
+   var table = document.getElementById('dynamic_table');
+   var checkboxArray = document.getElementsByName('checkboxObj');
+   
+   for (var i=checkboxArray.length-1; i>=0; i--) {
+      var check = checkboxArray[i].checked;
+      
+      if (check) {
+         table.deleteRow(i);
+      }
+   }
 }
 </script>
 </head>
@@ -111,7 +142,7 @@ function check(){
      %>
     <div class="container">
         <div class="row">
-            <form method="post" action="notice_writeController" onsubmit="return check()">
+            <form method="post" action="notice_writeController" encType="multipart/form-data" onsubmit="return check()">
                 <table class="table table-striped" style="text-align:center; border:1px solid #dddddd;">
                     <thead>
                     <tr>
@@ -127,9 +158,13 @@ function check(){
                     </tr>
                 </tbody>
                 </table>
-             <input type="submit" class="btn btn-primary pull-right" style="position:relative;" value="등록">
+	             <input type="button"class="btn btn-primary"  value="첨부파일 추가" onClick="addRow();"/>
+	             <input type="button"class="btn btn-primary"  value="첨부파일 삭제" onClick="deleteRow();"/>
+	             <table id="dynamic_table" border="1"></table>
+                    <h5><font color="red">업로드할 팔인은 최대 5MB까지 업로드 가능</font></h5>
+		     <input type="submit" id="reg" class="btn btn-primary pull-right" style="position:relative;" value="등록">
              <a href="notice.jsp" class="btn btn-primary pull-right" style="position:relative; right:10px;">목록</a>
-            </form>
+             </form>
         </div>
     </div>
     <%
@@ -137,8 +172,6 @@ function check(){
          int N_NO = Integer.parseInt(request.getParameter("N_NO"));
          int REPLY = Integer.parseInt(request.getParameter("REPLY"));
          int RE_NO = Integer.parseInt(request.getParameter("RE_NO"));
-         
-         
     %><div class="container">
         <div class="row">
             <form method="post" action="reply_writeController?N_NO=<%=N_NO %>&NO=<%=NO %>&REPLY=<%=REPLY %>&RE_NO=<%=RE_NO %>" onsubmit="return check()">
@@ -232,6 +265,7 @@ function check(){
                          <td style="width:150px; ">내용</td><td colspan= "2" style="min-height: 400px; text-align: left;"><%= notice_read.getN_CONTENT()%> </td>
                     </tr>
                 </tbody>
+                <a  href="downloadController" class="btn btn-primary">다운로드</a>
                 </table>
                 <%
                 int NNO = notice_read.getNO();

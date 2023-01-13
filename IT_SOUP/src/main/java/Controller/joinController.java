@@ -37,6 +37,7 @@ public class joinController extends HttpServlet {
         String ADDR= request.getParameter("ADDR1").replace(" ", "");
         String ADDR2 = request.getParameter("ADDR2").replace(" ", "");
         String EMAIL= request.getParameter("EMAIL").replace(" ", "");
+        int REG_EMPNO = Integer.parseInt(request.getParameter("NO").replace(" ", ""));
         
         UserDTO userDTO = new UserDTO();
         userDTO.setID(ID);
@@ -47,6 +48,7 @@ public class joinController extends HttpServlet {
         userDTO.setADDR(ADDR);
         userDTO.setADDR2(ADDR2);
         userDTO.setEMAIL(EMAIL);
+        userDTO.setREG_EMPNO(REG_EMPNO);
 
             UserDAO userDAO = new UserDAO();
             

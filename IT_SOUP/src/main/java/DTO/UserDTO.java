@@ -15,12 +15,14 @@ public class UserDTO {
     private static String ADDR2;
     private static String JOIN_DD;;
     private static String MOD_DD;
+    private static int REG_EMPNO;
+    private static int MOD_EMPNO;
     
     public UserDTO(){
         super();
     }
     
-    public UserDTO(int NO, String ID, String PASSWORD, String NAME, String HPNO, String SSN, String EMAIL, String GRADE_CD, String LEVEL,String CHG_PW_YN, String ADDR, String ADDR2, String JOIN_DD, String MOD_DD) {
+    public UserDTO(int NO, String ID, String PASSWORD, String NAME, String HPNO, String SSN, String EMAIL, String GRADE_CD, String LEVEL,String CHG_PW_YN, String ADDR, String ADDR2, String JOIN_DD, String MOD_DD, int REG_EMPNO, int MOD_EMPNO) {
         super();
         UserDTO.NO = NO ;
         UserDTO.ID = ID ;
@@ -35,7 +37,8 @@ public class UserDTO {
         UserDTO.ADDR =  ADDR;
         UserDTO.ADDR2 = ADDR2;
         UserDTO.JOIN_DD = JOIN_DD;
-        UserDTO.MOD_DD = MOD_DD;
+        UserDTO.REG_EMPNO = REG_EMPNO;
+        UserDTO.MOD_EMPNO = MOD_EMPNO;
     }
 
     public static String getADDR2() {
@@ -142,11 +145,27 @@ public class UserDTO {
         CHG_PW_YN = cHG_PW_YN;
     }
 
-    public String getADDR() {
+    public static String getADDR() {
         return ADDR;
     }
 
-    public void setADDR(String aDDR) {
+    public static void setADDR(String aDDR) {
         ADDR = aDDR;
+    }
+
+    public static int getREG_EMPNO() {
+        return REG_EMPNO;
+    }
+
+    public static void setREG_EMPNO(int rEG_EMPNO) {
+        REG_EMPNO = rEG_EMPNO;
+    }
+
+    public static int getMOD_EMPNO() {
+        return MOD_EMPNO;
+    }
+
+    public static void setMOD_EMPNO(int mOD_EMPNO) {
+        MOD_EMPNO = mOD_EMPNO;
     }
 }

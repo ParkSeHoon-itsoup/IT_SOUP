@@ -226,16 +226,18 @@ function chkFindPw(){
 <body>
     <%
     String formNm = request.getParameter("formNm");
+    String ID = null;
     
-    session = request.getSession();
-    
-    String ID = (String)session.getAttribute("ID");
-    
-    if( (String)request.getAttribute("ID") != null){
-        ID =  (String)request.getAttribute("ID");
+    if( (String)session.getAttribute("ID") != null){
+       ID =  (String)session.getAttribute("ID");
     }
     
+    System.out.println("ID = " + ID);
+    
     if(ID != null){
+        session = request.getSession();
+        ID = (String)session.getAttribute("ID");
+        int NO = (int)session.getAttribute("NO");
     %>
         <nav class="navbar navbar-default">
             <div class="navbar-header">
@@ -326,7 +328,7 @@ function chkFindPw(){
         %>
         <div class="container">
             <div class ="jumbotron" style="padding-top:20px; background-color:#eee; width:60%; position:relative; left:20%;">
-                <form method = "post" action="joinController" onsubmit="return check()" style=" width:100%; ">
+                <form method = "post" action="joinController?NO=<%=NO %>" onsubmit="return check()" style=" width:100%; ">
                     <h3 style="text-align:center;">회원가입</h3>
                     <div class ="form-group" style="right-padding:20%;">
                         <h5 style="width:110px; float:left; position:relative; top:-4px; left:15px;">*아이디</h5>

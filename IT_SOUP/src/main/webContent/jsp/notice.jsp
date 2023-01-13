@@ -16,7 +16,10 @@
         color : #000000;
         text-decoration:none;
     }
-    a:active{color:red;}
+    
+    .page:active{
+        color:red;
+    }
 </style>
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
 </head>
@@ -44,13 +47,13 @@
             ID =  (String)request.getAttribute("ID");
         }
 
-        int pageNumber = 1;
-        if(request.getParameter("pageNumber") != null){
-            pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
-        }
+       String pageNumber = request.getParameter("pageNumber");
+       if(pageNumber == null){
+           pageNumber = "1";
+       }
         
-        int currentPage = pageNumber;
-        int strartRow = (pageNumber-1)*10 +1;
+        int currentPage = Integer.parseInt(pageNumber);
+        int startRow = (currentPage-1)*10 + 1;
     %>
     <nav class="navbar navbar-default">
         <div class="navbar-header">
@@ -106,10 +109,10 @@
                 <%
                 if("searchList".equals(formNm)){
                     NoticeDAO noticeDAO = new NoticeDAO();
-                     ArrayList<NoticeDTO> searchList = noticeDAO.getsearchList(searchField, searchText, strartRow);
+                     ArrayList<NoticeDTO> searchList = noticeDAO.getsearchList(searchField, searchText, startRow);
                      
                      System.out.println("currentPage = " + currentPage);
-                     System.out.println("strartRow = " + strartRow);
+                     System.out.println("strartRow = " + startRow);
                      
                      for(int i=0; i<searchList.size(); i++){
                 %>
@@ -125,11 +128,11 @@
                 </tbody>
             </table>
                 <%
-                       int cnt = noticeDAO.listCount();
-                       int pageCount = cnt/10 + (cnt*10==0?0:1);
-                       int pageBlock = 10;
-                       int startPage = pageNumber;
-                       int endPage = startPage + pageBlock-1;
+                        int cnt = noticeDAO.listCount();
+                        int pageCount = cnt/10 + (cnt*10==0?0:1);
+                        int pageBlock = 10;
+                        int startPage = ((currentPage-1)/pageBlock)*pageBlock+1;
+                        int endPage = startPage + pageBlock-1;
                        
                        if(endPage > pageCount){
                            endPage = pageCount;
@@ -139,13 +142,14 @@
                 <%
                 if(startPage>pageBlock){
                 %>
+                       <a href="notice.jsp?pageNumber=1"onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''">[처음]</a>
                        <a href="notice.jsp?pageNumber=<%=startPage-pageBlock %>"  onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''" >[이전]</a>
                 <%
                        }
                 
                       for(int idx=startPage; idx<=endPage; idx++){
                 %>
-                        <a href="notice.jsp?pageNumber=<%=idx  %>" onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''"  style="active;"><%=idx %></a>
+                        <a href="notice.jsp?pageNumber=<%=idx  %>" onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''"  class="page"><%=idx %></a>
                 <%
                       }
                 
@@ -164,29 +168,37 @@
             }
             %>
             <form method="post" name="search" action="notice.jsp?formNm=searchList">
-	            <table class="pull-right">
-		            <tr>
-		                <td><select class="form-control" name="searchField">
-		                         <option value="N_TITLE">제목</option>
-		                         <option value="N_CONTENT">내용</option>
-		                         <option value="TOTAL">제목  + 내용</option>
-		                         </select></td>
-		                <td><input type="text" class="form-control" placeholder="검색어 입력" name="searchText" maxlength="100"></td>
-		                <td><button type="submit" class="btn btn-primary">검색</button></td>
-		            </tr>
-	           </table>
+                <table class="pull-right">
+                    <tr>
+                        <td><select class="form-control" name="searchField">
+                                 <option value="N_TITLE">제목</option>
+                                 <option value="N_CONTENT">내용</option>
+                                 <option value="TOTAL">제목  + 내용</option>
+                                 </select></td>
+                        <td><input type="text" class="form-control" placeholder="검색어 입력" name="searchText" maxlength="100"></td>
+                        <td><button type="submit" class="btn btn-primary">검색</button></td>
+                    </tr>
+               </table>
            </form>
              <%
                 } else {
                    NoticeDAO noticeDAO = new NoticeDAO();
                    int cnt = noticeDAO.listCount();
-                   ArrayList<NoticeDTO> list = noticeDAO.getList(strartRow);
+                   ArrayList<NoticeDTO> list = noticeDAO.getList(startRow);
                    
                    for(int i=0; i<list.size(); i++){
                    %>
                     <tr>
                         <td style="text-align:center"><%=list.get(i).getN_NO() %></td>
-                        <td style="text-align:left"><a href="notice_write.jsp?N_NO=<%=list.get(i).getN_NO() %>&REPLY=<%=list.get(i).getREPLY() %>&RE_NO=<%=list.get(i).getRE_NO() %>&formNm=notice_read"><%=list.get(i).getN_TITLE().replaceAll(" ", "&nbsp;").replaceAll("<", "&alt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>") %></a></td>
+                        <%
+                        int reply = list.get(i).getREPLY();
+                        String RE = "";
+                        
+                        for(int r=0; r<reply; r++){
+                            RE += "\t\t[RE]" ;
+                        }
+                        %>
+                        <td style="text-align:left"><a href="notice_write.jsp?N_NO=<%=list.get(i).getN_NO() %>&REPLY=<%=list.get(i).getREPLY() %>&RE_NO=<%=list.get(i).getRE_NO() %>&formNm=notice_read"><%=RE + list.get(i).getN_TITLE().replaceAll(" ", "&nbsp;").replaceAll("<", "&alt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>") %></a></td>
                         <td style="text-align:center"><%=list.get(i).getNAME() + "(" + list.get(i).getID()+ ")" %></td>
                         <td style="text-align:center"><%=list.get(i).getN_DATE().substring(0,4) + "년 "  + list.get(i).getN_DATE().substring(5,7) + "월 " + list.get(i).getN_DATE().substring(8,10) + "일"%></td>
                     </tr>
@@ -198,25 +210,24 @@
             <%
                    int pageCount = cnt/10 + (cnt*10==0?0:1);
                    int pageBlock = 10;
-                   int startPage = pageNumber;
+                   int startPage = ((currentPage-1)/pageBlock)*pageBlock+1;
                    int endPage = startPage + pageBlock-1;
                    
                    if(endPage > pageCount){
                        endPage = pageCount;
                    }
             %>
-                   <a href="notice.jsp?pageNumber=1"onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''">[처음]</a>
             <%
             if(startPage>pageBlock){
             %>
+                   <a href="notice.jsp?pageNumber=1"onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''">[처음]</a>
                    <a href="notice.jsp?pageNumber=<%=startPage-pageBlock %>"  onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''" >[이전]</a>
             <%
                    }
             
                   for(int idx=startPage; idx<=endPage; idx++){
             %>
-<%--                     <a href="notice.jsp?pageNumber=<%=idx  %>" onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''"  style="active;"><%=idx %></a> --%>
-                    <a href="notice.jsp" onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''"  style="active;"><%=idx %></a>
+                    <a href="notice.jsp?pageNumber=<%=idx  %>" onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight=''" ><%=idx %></a>
             <%
                   }
             

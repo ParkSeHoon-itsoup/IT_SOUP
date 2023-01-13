@@ -46,7 +46,24 @@ public class NoticeDAO {
         return -1;
     }
     
-    public int write(int NO, String N_TITLE,  String N_CONTENT) {
+    public int findN_NO() {
+        String SQL = "SELECT IFNULL(MAX(N_NO), 0) + 1"
+                +"              FROM TB_NOTICE";
+        
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(SQL);
+            rs = pstmt.executeQuery();
+            
+            if(rs.next()) {
+                return rs.getInt(1);   
+            }
+        } catch(Exception e) {
+            System.out.println("공지사항 번호 찾기 에러 : " + e);
+        }
+        return -1;
+    }
+    
+    public int write(NoticeDTO noticeDTO) {
         String SQL = "INSERT INTO TB_NOTICE "
                 + "          (N_NO"
                 + "         , NO"
@@ -57,8 +74,7 @@ public class NoticeDAO {
                 + "         , RE_NO"
                 + "           ) "
                 + "           VALUES "
-                + "          ((SELECT IFNULL(MAX(N_NO), 0) + 1 "
-                + "               FROM TB_NOTICE B)"
+                + "          (TRIM(?)"
                 + "        , TRIM(?)"
                 + "        , TRIM(?)"
                 + "        , TRIM(?)"
@@ -69,9 +85,10 @@ public class NoticeDAO {
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
-            pstmt.setInt(1, NO);
-            pstmt.setString(2,  N_TITLE);
-            pstmt.setString(3, N_CONTENT);
+            pstmt.setInt(1, noticeDTO.getN_NO());
+            pstmt.setInt(2, noticeDTO.getNO());
+            pstmt.setString(3,noticeDTO.getN_TITLE());
+            pstmt.setString(4, noticeDTO.getN_CONTENT());
             
             return pstmt.executeUpdate();
         } catch(Exception e) {
@@ -129,21 +146,20 @@ public class NoticeDAO {
                 + "             FROM TB_NOTICE A"
                 + "                       , TB_EMP B"
                 + "          WHERE A.NO = B.NO"
-                + "           ORDER BY A.N_NO DESC"
-                + "                             , A.REPLY"
+                + "          ORDER BY A.N_NO DESC"
                 + "                             , A.RE_NO"
+                + "                             , A.REPLY"
                 + "              LIMIT ?"
-                + "                     , 10"
-                ;
-                
+                + "                     , 10";
+            
         ArrayList<NoticeDTO> list = new ArrayList<NoticeDTO>();
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
-            pstmt.setInt(1, startRow -1*10);
-            
+            pstmt.setInt(1, (startRow -1));
+
             rs = pstmt.executeQuery();
-            
+
            while(rs.next()) {
                NoticeDTO noticeDTO = new NoticeDTO();
                noticeDTO.setN_NO(rs.getInt(1));
@@ -207,6 +223,13 @@ public class NoticeDAO {
     }
     
     public NoticeDTO notice_read(int N_NO, int REPLY,  int RE_NO) {
+        
+        System.out.println("DAO.N_NO = " + N_NO);
+        System.out.println("DAO.REPLY = " + REPLY);
+        System.out.println("DAO.RE_NO = " + RE_NO);
+        
+        
+        
         String SQL = "SELECT A.N_TITLE"
                 + "                        , B.NAME"
                 + "                        , A.N_DATE"
@@ -342,7 +365,7 @@ public class NoticeDAO {
         return searchList;
     }
     
-    public int reply_write(int NO,int N_NO, int REPLY,  int RE_NO, String R_TITLE, String R_CONTENT) {
+    public int reply_write(int NO,int N_NO, int REPLY,  int RE_NO, String R_TITLE, String R_CONTENT, String P_ID) {
          String SQL = "INSERT INTO TB_NOTICE "
                  + "           (N_NO"
                  + "          , REPLY"
@@ -351,6 +374,7 @@ public class NoticeDAO {
                  + "          , N_TITLE"
                  + "          , N_CONTENT"
                  + "          , N_DATE"
+                 + "          , P_ID"
                  + "           )"
                  + "           VALUES"
                  + "          (?"
@@ -368,6 +392,7 @@ public class NoticeDAO {
                  + "        , ?"
                  + "        , ?"
                  + "        , CURRENT_DATE()"
+                 + "        , ?"
                  + "        )";
          
          try {
@@ -381,6 +406,7 @@ public class NoticeDAO {
              pstmt.setInt(7, NO);
              pstmt.setString(8, R_TITLE);
              pstmt.setString(9, R_CONTENT);
+             pstmt.setString(10, P_ID);
              
              return pstmt.executeUpdate();
          } catch(Exception e) {

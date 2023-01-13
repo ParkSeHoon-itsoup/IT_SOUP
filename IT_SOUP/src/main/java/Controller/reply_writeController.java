@@ -32,7 +32,7 @@ public class reply_writeController extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         
         int NO = Integer.parseInt(request.getParameter("NO"));
-        System.out.println("NO = " + NO);
+        System.out.println("NO" + NO);
         int N_NO = Integer.parseInt(request.getParameter("N_NO"));
         System.out.println("N_NO = " + N_NO);
         int REPLY = Integer.parseInt(request.getParameter("REPLY"));
@@ -40,12 +40,14 @@ public class reply_writeController extends HttpServlet {
         int RE_NO = Integer.parseInt(request.getParameter("RE_NO"));
         System.out.println("RE_NO = " + RE_NO);
         String R_TITLE = request.getParameter("R_TITLE");
-        System.out.println("R_TITLE = " + R_TITLE);
+        System.out.println("R_TITLE" + R_TITLE);
         String R_CONTENT = request.getParameter("R_CONTENT");
-        System.out.println("R_CONTENT = " + R_CONTENT);
+        System.out.println("NO = " + R_CONTENT);
+        String P_ID = String.valueOf(N_NO) +String.valueOf(REPLY) + String.valueOf(RE_NO); 
+        System.out.println("P_ID = " + P_ID);
         
         NoticeDAO noticeDAO = new NoticeDAO();
-        int result = noticeDAO.reply_write(NO, N_NO, REPLY, RE_NO, R_TITLE,  R_CONTENT);
+        int result = noticeDAO.reply_write(NO, N_NO, REPLY, RE_NO, R_TITLE,  R_CONTENT, P_ID);
         
         if(result == 1) {
             PrintWriter script = response.getWriter();

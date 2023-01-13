@@ -11,7 +11,7 @@ public class NoticeDTO {
     private String ID;
     private int REPLY;
     private int RE_NO;
-
+    private String P_ID;
 
     public NoticeDTO() {
         super();
@@ -95,5 +95,13 @@ public class NoticeDTO {
 
     public void setRE_NO(int rE_NO) {
         RE_NO = rE_NO;
+    }
+
+    public String getP_ID() {
+        return P_ID;
+    }
+
+    public void setP_ID(String p_ID) {
+        P_ID = p_ID;
     }
 }

@@ -24,8 +24,36 @@ public class UserDAO {
     }
     
     public int join(UserDTO userDTO) {
-        String SQL = "INSERT INTO TB_EMP (NO, ID, PASSWORD, NAME, HPNO, SSN, EMAIL, LEVEL, CHG_PW_YN, ADDR, ADDR2, JOIN_DD) VALUES  ((SELECT IFNULL(MAX(NO) + 1, 1) FROM TB_EMP B), TRIM(?), TRIM(hex(aes_encrypt(?, 'PASSWORD')))"
-                + "                                                                                                                                                                                                                                                , TRIM(?), TRIM(?), TRIM(hex(aes_encrypt(?, 'SSN'))), TRIM(?), TRIM(?), TRIM(?), TRIM(?), TRIM(?), TRIM(?))";
+        String SQL = "INSERT INTO TB_EMP"
+                + "           (NO"
+                + "          , ID"
+                + "          , PASSWORD"
+                + "          , NAME"
+                + "          , HPNO"
+                + "          , SSN"
+                + "          , EMAIL"
+                + "          , LEVEL"
+                + "          , CHG_PW_YN"
+                + "          , ADDR"
+                + "         , ADDR2"
+                + "         , JOIN_DD"
+                + "         , REG_EMPNO"
+                + "           )"
+                + "           VALUES  "
+                + "          ((SELECT IFNULL(MAX(NO) + 1, 1) FROM TB_EMP B)"
+                + "          , TRIM(?)"
+                + "          , TRIM(hex(aes_encrypt(?, 'PASSWORD')))"
+                + "          , TRIM(?)"
+                + "          , TRIM(?)"
+                + "          , TRIM(hex(aes_encrypt(?, 'SSN')))"
+                + "          , TRIM(?)"
+                + "          , TRIM(?)"
+                + "          , TRIM(?)"
+                + "          , TRIM(?)"
+                + "          , TRIM(?)"
+                + "          , current_date()"
+                + "          , ?"
+                + "           )";
                 
                 try {
                     PreparedStatement pstmt = conn.prepareStatement(SQL);
@@ -40,7 +68,7 @@ public class UserDAO {
                     pstmt.setString(8, "N");
                     pstmt.setString(9, userDTO.getADDR());
                     pstmt.setString(10, userDTO.getADDR2());
-                    pstmt.setString(11, userDTO.getJOIN_DD());
+                    pstmt.setInt(11, userDTO.getREG_EMPNO());
                                         
                     return pstmt.executeUpdate();
                 } catch(Exception e) {

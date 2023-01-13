@@ -21,108 +21,11 @@
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
 <body> 
-    <%
-        String formNm = request.getParameter("formNm");
-            
-        session = request.getSession();
-        
-        String naming = (String)session.getAttribute("naming");
-        
-        String ID = (String)session.getAttribute("ID");
-        String NAME = (String)session.getAttribute("NAME");
-        //String naming = (String)request.getAttribute("naming");
-       // String naming2 = request.getParameter("naming2");
-        
-       // String name = (!"".equals(naming) || null != naming)  ? naming : naming2 ;
-
-        if( (String)request.getAttribute("ID") != null){
-            ID =  (String)request.getAttribute("ID");
-        }
-
-        int pageNumber = 1;
-        if(request.getParameter("pageNumber") != null){
-            pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
-        }
-    %>
-    <nav class="navbar navbar-default">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="notice.jsp">IT_SOUP</a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="">공지사항</a></li>
-                <li ><a href="">주소록</a></li>
-            </ul>
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" >
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" 
-                            data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%=naming %><span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="logoutController">로그아웃</a></li>
-                            <li><a href="">내정보관리</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-     </nav>
-     <div>
-     </div>
-     
-         <div class="container">
-        <div class="row">
-            <table class="table table-striped" style="text-align:enter; border:1px solid #dddddd;'">
-                <thead>
-                    <tr>
-                        <th style="background-color:#eeeeee; text-align:center;">번호</th>
-                        <th style="background-color:#eeeeee; text-align:center;">제목</th>
-                        <th style="background-color:#eeeeee; text-align:center;">작성자</th>
-                        <th style="background-color:#eeeeee; text-align:center;">작성일</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <%
-                
-                   NoticeDAO noticeDAO = new NoticeDAO();
-                   ArrayList<NoticeDTO> list = noticeDAO.getList(pageNumber);
-                   
-                   for(int i=0; i<list.size(); i++){
-                %>
-                    <tr>
-                        <td style="text-align:center"><%=list.get(i).getN_NO() %></td>
-                        <td style="text-align:center"><a href="notice_write.jsp?N_NO=<%=list.get(i).getN_NO() %>"><%=list.get(i).getN_TITLE().replaceAll(" ", "&nbsp;").replaceAll("<", "&alt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>") %></a></td>
-                        <td style="text-align:center"><%=list.get(i).getNAME() %></td>
-                        <td style="text-align:center"><%=list.get(i).getN_DATE().substring(0,11) + list.get(i).getN_DATE().substring(11, 13) + "시 " + list.get(i).getN_DATE().substring(14, 16) + "분 " %></td>
-                    </tr>
-                <%
-                   }
-                %>
-                </tbody>
-            </table>
-            <%
-               if(pageNumber != 1){
-            %>
-                   <a href="notice.jsp?pageNumber=<%=pageNumber - 1 %>" class="btn btn-success btn-arrow-left">이전</a>
-            <%
-                }
-            
-                if(noticeDAO.nextPage(pageNumber + 1)){
-            %>
-                     <a href="notice.jsp?pageNumber=<%=pageNumber + 1 %>" class="btn btn-success btn-arrow-left">다음</a> 
-            <%
-                }
-            %>
-            <a href="notice_write.jsp?naming=<%= naming %>" class="btn btn-primary pull-right">글쓰기</a>
-            <%
-             if("list".equals(formNm)){
-            %>
-            <a href="notice_write.jsp" class="btn btn-primary pull-right">목록</a>
-            <%
-              }
-            %>
-        </div>
-    </div>
-        <script src="js/bootstrap.js"></script>
+    <form method="post" action="notice_writeController" encType="multipart/form-data">
+       제목 :  <input type="text" name="N_TITLE" /><p/>
+        내용 : <input type="text" name="N_CONTENT" /><p/>
+        파일선택 : <input type="file" name="upFile"/><p/>
+        <input type="submit" value="업로드">
+    </form>
 </body>
 </html>
