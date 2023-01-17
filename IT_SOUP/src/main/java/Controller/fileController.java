@@ -29,10 +29,11 @@ public class fileController extends HttpServlet {
         response.setContentType("text/html; charset=utf-8");
         response.setCharacterEncoding("utf-8");
         
-//        String savePath = "upload";
-//        ServletContext context = getServletContext();
-//        String uploadFilePath = context.getRealPath(savePath);
-            String uploadFilePath = "C:\\NEW";
+        String savePath = "upload";
+        ServletContext context = getServletContext();
+        String uploadFilePath = context.getRealPath(savePath);
+        System.out.println("uploadFilePath = " + uploadFilePath);
+//            String uploadFilePath = "C:\\Users\\chulg\\upload";
             
         File path = new File(uploadFilePath);
         if(!path.exists()) {

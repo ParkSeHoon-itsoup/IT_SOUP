@@ -33,7 +33,7 @@ public class notice_writeController extends HttpServlet {
         HttpSession session = request.getSession();
         String ID = (String)session.getAttribute("ID");
 
-        String uploadFilePath = "C:\\NEW";
+        String uploadFilePath = "C:\\Users\\chulg\\upload";
         
         File path = new File(uploadFilePath);
         if(!path.exists()) {
@@ -48,20 +48,7 @@ public class notice_writeController extends HttpServlet {
         String N_CONTENT = multi.getParameter("N_CONTENT");
         System.out.println("N_TITLE = " + N_TITLE);
         System.out.println("N_CONTENT = " + N_CONTENT);
-        
-        Enumeration files = multi.getFileNames();
-        while(files.hasMoreElements()) {
             
-            String file = (String)files.nextElement();
-            String file_name = multi.getFilesystemName(file);
-            String ori_file_name = multi.getOriginalFileName(file);
-            
-           System.out.println("업로드된 파일명: " + file_name);
-           System.out.println("원본 파일명: " + ori_file_name);
-           
-           File f = multi.getFile(file);
-        }
-        
         if((null == N_TITLE || "".equals(N_TITLE)) ||(null == N_CONTENT || "".equals(N_CONTENT))) {
             PrintWriter script = response.getWriter();
             script.println("<script>");
@@ -90,39 +77,45 @@ public class notice_writeController extends HttpServlet {
                 script.println("history.back()");
                 script.println("</script>");
             } else {
-                if("".equals(files) || null == files) {
-                    PrintWriter script = response.getWriter();
-                    script.println("<script>");
-                    script.println("alert('새로운 공지사항을 등록하였습니다.')");
-                    script.println("location.href='notice.jsp'");
-                    script.println("</script>");
-                } else {
                     FileDAO fileDAO = new FileDAO();
-                        files = multi.getFileNames(); 
-                        while(files.hasMoreElements()) {
-                            
-                        String file = (String)files.nextElement();
-                        String file_name = multi.getFilesystemName(file);
-                        String ori_file_name = multi.getOriginalFileName(file);
-                       
-                       File f = multi.getFile(file);
-                       
-                       int resultAttach = fileDAO.regAttach(N_NO, file_name, ori_file_name);
-                       
-                       if(resultAttach == -1) {
-                           PrintWriter script = response.getWriter();
-                           script.println("<script>");
-                           script.println("alert('파일업로드 실패.')");
-                           script.println("location.href='notice.jsp'");
-                           script.println("</script>");
-                       }
-                    }
+                    Enumeration files = multi.getFileNames();
+                        while(files.hasMoreElements()){
+                                String file = (String)files.nextElement();
+                                String file_name = multi.getFilesystemName(file);
+                                String ori_file_name = multi.getOriginalFileName(file);
+                               
+
+                                
+                               File f = multi.getFile(file);
+                               
+                               if(!("".equals(file_name) || null ==file_name)) {
+                                   
+                                   
+                                   
+
+                                   System.out.println("files: " + files);
+                                   System.out.println("file: " + file);
+                                   System.out.println("업로드된 파일명: " + file_name);
+                                   System.out.println("원본 파일명: " + ori_file_name);
+                                   
+                                   
+                                   
+                                   int resultAttach = fileDAO.regAttach(N_NO, file_name, ori_file_name);
+                                   
+                                   if(resultAttach == -1) {
+                                       PrintWriter script = response.getWriter();
+                                       script.println("<script>");
+                                       script.println("alert('파일업로드 실패.')");
+                                       script.println("location.href='notice.jsp'");
+                                       script.println("</script>");
+                                   }
+                               }
+                        }
                         PrintWriter script = response.getWriter();
                         script.println("<script>");
                         script.println("alert('새로운 공지사항을 등록하였습니다.')");
                         script.println("location.href='notice.jsp'");
                         script.println("</script>");
-                }
             }
         } 
     }

@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+
+import DTO.FileDTO;
 
 public class FileDAO {
     private Connection conn;
@@ -45,4 +48,55 @@ public class FileDAO {
         }
         return -1;
     }
+    
+    public ArrayList<FileDTO> getList(int N_NO){
+        String SQL = "SELECT F_REALNAME "
+                + "             FROM TB_ATTACH "
+                + "           WHERE N_NO = ?";
+        
+        try {
+            ArrayList<FileDTO> list = new ArrayList<FileDTO>();
+            
+            PreparedStatement pstmt = conn.prepareStatement(SQL);
+            pstmt.setInt(1, N_NO);
+            
+            rs = pstmt.executeQuery();
+            
+            while(rs.next()) {
+                FileDTO fileDTO = new FileDTO();
+                fileDTO.setF_REALNAME(rs.getString(1));
+                list.add(fileDTO);
+            }
+            return list;
+        } catch(Exception e) {
+            System.out.println("첨부파일 불러오기 실패 : " + e);
+        }
+        return null;
+    }
+    
+    public int deldelAttach(int N_NO) {
+        String SQL = "DELETE"
+                + "              FROM TB_ATTACH"
+                + "            WHERE N_NO = ?";
+        
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(SQL);
+            pstmt.setInt(1, N_NO);
+            
+            return pstmt.executeUpdate();
+        } catch(Exception e) {
+            System.out.println("첨부파일 삭제 실패 : " + e);
+        }
+        return -1;
+    }
 }
+
+
+
+
+
+
+
+
+
+

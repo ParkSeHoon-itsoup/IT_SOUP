@@ -31,8 +31,8 @@ public class reply_writeController extends HttpServlet {
         response.setContentType("text/html; charset=utf-8");
         response.setCharacterEncoding("utf-8");
         
-        int NO = Integer.parseInt(request.getParameter("NO"));
-        System.out.println("NO" + NO);
+        //int NO = Integer.parseInt(request.getParameter("NO"));
+    //    System.out.println("NO" + NO);
         int N_NO = Integer.parseInt(request.getParameter("N_NO"));
         System.out.println("N_NO = " + N_NO);
         int REPLY = Integer.parseInt(request.getParameter("REPLY"));
@@ -45,22 +45,41 @@ public class reply_writeController extends HttpServlet {
         System.out.println("NO = " + R_CONTENT);
         String P_ID = String.valueOf(N_NO) +String.valueOf(REPLY) + String.valueOf(RE_NO); 
         System.out.println("P_ID = " + P_ID);
-        
-        NoticeDAO noticeDAO = new NoticeDAO();
-        int result = noticeDAO.reply_write(NO, N_NO, REPLY, RE_NO, R_TITLE,  R_CONTENT, P_ID);
-        
-        if(result == 1) {
-            PrintWriter script = response.getWriter();
-            script.println("<script>");
-            script.println("alert('새로운 댓글을 등록하였습니다.')");
-            script.println("location.href='notice.jsp'");
-            script.println("</script>");
-        } else {
-            PrintWriter script = response.getWriter();
-            script.println("<script>");
-            script.println("alert('댓글 등록에 실패하였습니다..')");
-            script.println("location.href='notice.jsp'");
-            script.println("</script>");
-        }
+//        
+//        if(REPLY == 0) {
+//            NoticeDAO noticeDAO = new NoticeDAO();
+//     //       int result = noticeDAO.reply_write(NO, N_NO, REPLY, RE_NO, R_TITLE,  R_CONTENT, P_ID);
+//            
+//            if(result == 1) {
+//                PrintWriter script = response.getWriter();
+//                script.println("<script>");
+//                script.println("alert('새로운 댓글을 등록하였습니다.')");
+//                script.println("location.href='notice.jsp'");
+//                script.println("</script>");
+//            } else {
+//                PrintWriter script = response.getWriter();
+//                script.println("<script>");
+//                script.println("alert('댓글 등록에 실패하였습니다..')");
+//                script.println("location.href='notice.jsp'");
+//                script.println("</script>");
+//            }
+//        } else {
+//            NoticeDAO noticeDAO = new NoticeDAO();
+//            int result = noticeDAO.reply_write(NO, N_NO, REPLY, RE_NO, R_TITLE,  R_CONTENT, P_ID);
+//            
+//            if(result == 1) {
+//                PrintWriter script = response.getWriter();
+//                script.println("<script>");
+//                script.println("alert('새로운 댓글을 등록하였습니다.')");
+//                script.println("location.href='notice.jsp'");
+//                script.println("</script>");
+//            } else {
+//                PrintWriter script = response.getWriter();
+//                script.println("<script>");
+//                script.println("alert('댓글 등록에 실패하였습니다..')");
+//                script.println("location.href='notice.jsp'");
+//                script.println("</script>");
+//            }
+//        }
 	}
 }

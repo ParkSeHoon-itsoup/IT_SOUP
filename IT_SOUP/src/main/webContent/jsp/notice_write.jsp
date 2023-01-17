@@ -2,7 +2,10 @@
     pageEncoding="UTF-8"%>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="DAO.NoticeDAO" %>
+<%@ page import="DAO.FileDAO" %>
 <%@ page import="DTO.NoticeDTO" %>
+<%@ page import="DTO.FileDTO" %>
+<%@ page import="java.util.ArrayList" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -52,20 +55,22 @@ function check(){
 }
 
 function addRow(){
-	var dynamicTable = document.getElementById('dynamic_table');
-	var newRow = dynamicTable.insertRow();
-	var cell1 = newRow.insertCell();
+    var dynamicTable = document.getElementById('dynamic_table');
+    var newRow = dynamicTable.insertRow();
+    var cell1 = newRow.insertCell();
     var cell2 = newRow.insertCell();
     
     cell1.innerHTML = '<input type="checkbox" name="checkboxObj"/>';
-    cell2.innerHTML = '<input type="file" name="fileupload' + count+'" size="70" onchange="checkSize(this)">';
+    cell2.innerHTML = '<input type="file" id="filesize" name="fileupload' + count+'" size="70" onchange="checkSize(this)">';
     count++
 }
 
 function checkSize(input){
-	if(input.files && input.files[0].size > (5*1024*1024)){
-		alert("파일 사이즈가 5MB를 초과하였습니다.");
-	}
+    	if(input.files && input.files[0].size > (5*1024*1024)){
+            alert("파일 사이즈가 5MB를 초과하였습니다.");
+            $(input).val("");
+            return false;
+    }
 }
 
 function deleteRow() {
@@ -158,12 +163,12 @@ function deleteRow() {
                     </tr>
                 </tbody>
                 </table>
-	             <input type="button"class="btn btn-primary"  value="첨부파일 추가" onClick="addRow();"/>
-	             <input type="button"class="btn btn-primary"  value="첨부파일 삭제" onClick="deleteRow();"/>
-	             <table id="dynamic_table" border="1"></table>
+                 <input type="submit" class="btn btn-primary" style="position:relative; left:1050px;" value="등록">
+                 <a href="notice.jsp" class="btn btn-primary" style="position:relative; left:1050px;">목록</a>
+                 <input type="button"class="btn btn-primary"  value="첨부파일 추가" onClick="addRow();" style="position:relative; right:115px;">
+                 <input type="button"class="btn btn-primary"  value="첨부파일 삭제" onClick="deleteRow();" style="position:relative; right:115px;">
+                 <table id="dynamic_table" border="1"></table>
                     <h5><font color="red">업로드할 팔인은 최대 5MB까지 업로드 가능</font></h5>
-		     <input type="submit" id="reg" class="btn btn-primary pull-right" style="position:relative;" value="등록">
-             <a href="notice.jsp" class="btn btn-primary pull-right" style="position:relative; right:10px;">목록</a>
              </form>
         </div>
     </div>
@@ -203,7 +208,7 @@ function deleteRow() {
     %>
         <div class="container">
         <div class="row">
-            <form method="post" action="mod_notice_write?N_NO=<%=N_NO %>" onsubmit="return check()">
+            <form method="post" action="mod_notice_write?N_NO=<%=N_NO %>" encType="multipart/form-data"  onsubmit="return check()">
                 <table class="table table-striped" style="text-align:center; border:1px solid #dddddd;">
                     <thead>
                     <tr>
@@ -219,12 +224,23 @@ function deleteRow() {
                          <td style="width:150px; ">제목</td><td><input  class="form-control" style="text-align: left;" placeholder= "<%= notice_read.getN_TITLE() %>" name="N_TITLE" id = "N_TITLE"></td> 
                     </tr>
                     <tr>
-                         <td style="width:150px; ">내용</td><td><textarea class="form-control"  style="min-height: 400px; text-align: left;" placeholder="<%= notice_read.getN_CONTENT()%>" name="N_CONTENT" id = "N_CONTENT"></textarea></td>
+                         <td style="width:150px; ">내용</td><td><textarea class="form-control"  style="min-height: 250px; text-align: left;" placeholder="<%= notice_read.getN_CONTENT()%>" name="N_CONTENT" id = "N_CONTENT"></textarea></td>
                     </tr>
                 </tbody>
                 </table>
-             <input type="submit" class="btn btn-primary pull-right" style="position:relative;" value="등록" onClick="return confirm('수정하시겠습니까?');">
-             <a href="notice.jsp" class="btn btn-primary pull-right" style="position:relative; right:10px;">목록</a>
+             <%
+             int NNO = notice_read.getNO();
+             if(NO == NNO){
+             %> 
+             <input type="submit" class="btn btn-primary pull-right" style="position:relative; top:-5px; right:70px;" value="등록" onClick="return confirm('수정하시겠습니까?');">
+             <%
+             }
+             %>
+             <a href="notice.jsp" class="btn btn-primary pull-right" style="position:relative; left:50px; top:-5px;">목록</a>
+                 <input type="button"class="btn btn-primary"  value="첨부파일 추가" onClick="addRow();"/>
+                 <input type="button"class="btn btn-primary"  value="첨부파일 삭제" onClick="deleteRow();"/>
+                 <table id="dynamic_table" border="1"></table>
+                    <h5><font color="red">업로드할 팔인은 최대 5MB까지 업로드 가능</font></h5>
             </form>
         </div>
     </div>
@@ -243,14 +259,19 @@ function deleteRow() {
                 <tbody>
                     <%
                         int N_NO = Integer.parseInt(request.getParameter("N_NO"));
-                    System.out.println("N_NO = " + N_NO);
-	                    int REPLY = Integer.parseInt(request.getParameter("REPLY"));
+                         System.out.println("N_NO = " + N_NO);
+                        int REPLY = Integer.parseInt(request.getParameter("REPLY"));
                         System.out.println("REPLY = " + REPLY);
-	                    int RE_NO = Integer.parseInt(request.getParameter("RE_NO"));
+                        int RE_NO = Integer.parseInt(request.getParameter("RE_NO"));
                         System.out.println("RE_NO = " + RE_NO);
+                        System.out.println("NO = " + NO);
                     
                         NoticeDAO noticeDAO = new NoticeDAO();
                         NoticeDTO notice_read = noticeDAO.notice_read(N_NO, REPLY, RE_NO);
+                        
+                        FileDAO fileDAO = new FileDAO();
+                        ArrayList<FileDTO> getList = fileDAO.getList(N_NO);
+                        
                     %>
                     <tr>
                          <td style="width:150px; ">제목</td><td colspan="2"  style="text-align: left;"><%= notice_read.getN_TITLE() %></td> 
@@ -265,16 +286,16 @@ function deleteRow() {
                          <td style="width:150px; ">내용</td><td colspan= "2" style="min-height: 400px; text-align: left;"><%= notice_read.getN_CONTENT()%> </td>
                     </tr>
                 </tbody>
-                <a  href="downloadController" class="btn btn-primary">다운로드</a>
+<!--                 <a  href="downloadController" class="btn btn-primary">다운로드</a> -->
                 </table>
                 <%
                 int NNO = notice_read.getNO();
                 if("01".equals(LEVEL) ||("02".equals(LEVEL) && NO == NNO)){
                 %>
-             <a onClick="return confirm('정말로 삭제하시겠습니까?');" href="delete_notice_writeController?N_NO=<%=N_NO %>" class="btn btn-primary" style="position:relative; left:1115px;">삭제</a>
-             <a href="notice_write.jsp?N_NO=<%=N_NO %>&REPLY=<%=REPLY%>&RE_NO=<%=RE_NO %>&formNm=mod_notice_write" class="btn btn-primary pull-right" style="position:relative; right:65px;">수정</a>
-             <a href="notice_write.jsp?N_NO=<%=N_NO %>&REPLY=<%= REPLY%>&RE_NO=<%=RE_NO %>&formNm=reply_write" class="btn btn-primary pull-right" style="position:relative; right:65px;">댓글 작성</a>
-             <a href="notice.jsp" class="btn btn-primary pull-right" style="position:relative; right:75px;">목록</a>
+             <a onClick="return confirm('정말로 삭제하시겠습니까?');" href="delete_notice_writeController?N_NO=<%=N_NO %>" class="btn btn-primary" style="position:relative; left:1120px;px;px; top: -10px;">삭제</a>
+             <a href="notice_write.jsp?N_NO=<%=N_NO %>&REPLY=<%=REPLY%>&RE_NO=<%=RE_NO %>&formNm=mod_notice_write" class="btn btn-primary pull-right" style="position:relative; right:65px; top:-10px;">수정</a>
+<%--              <a href="notice_write.jsp?N_NO=<%=N_NO %>&REPLY=<%= REPLY%>&RE_NO=<%=RE_NO %>&formNm=reply_write" class="btn btn-primary pull-right" style="position:relative; right:65px;">댓글 작성</a> --%>
+             <a href="notice.jsp" class="btn btn-primary pull-right" style="position:relative; right:80px; top:-10px;">목록</a>
              <%
                 } else {
              %>
@@ -282,7 +303,40 @@ function deleteRow() {
              <%
                 }
              %>
+                <div >
+                    <table style=" width:30%; position:relative;">
+                        <thead>
+                            <tr>
+                                <th>첨부파일</th>
+                            </tr>
+                        </thead>
+                        <%
+                        for(int i=0; i<getList.size(); i++){
+                        %>
+                        <tbody>
+                            <tr>
+                               <td style="width:30%;"><a href="downloadController?fileName=<%= getList.get(i).getF_REALNAME() %>"><%= getList.get(i).getF_REALNAME() %></a>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <%
+                }
+                %>
             </form>
+                   <form method="post" action="reply_writeController?N_NO=<%= N_NO %>&REPLY=<%=REPLY %>&RE_NO=<%=RE_NO %>&NO=<%=NO %>" onsubmit="return check()" style="width:1180px; left:0px; bottom:200px">
+                    <table class="table table-striped" style="text-align:center; border:1px solid #dddddd;">
+                        <tbody>
+                            <tr>
+                                 <td><input type="text" class="form-control" placeholder="댓글 제목" name="R_TITLE" maxlength="50"></td> 
+                            </tr>
+                            <tr>
+                                 <td><textarea class="form-control" placeholder="댓글 내용" name="R_CONTENT" maxlength="2048" style="height:300;"></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                 <input type="submit" class="btn btn-primary" style="position:relative; left:1080px; top:-10px" value="댓글 등록">
+                 </form>
         </div>
     </div>
     <%

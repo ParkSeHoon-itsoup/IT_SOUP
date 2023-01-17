@@ -146,6 +146,8 @@ public class NoticeDAO {
                 + "             FROM TB_NOTICE A"
                 + "                       , TB_EMP B"
                 + "          WHERE A.NO = B.NO"
+                + "                AND A.REPLY = 0"
+                + "               AND A.RE_NO = 0"
                 + "          ORDER BY A.N_NO DESC"
                 + "                             , A.RE_NO"
                 + "                             , A.REPLY"
@@ -282,7 +284,7 @@ public class NoticeDAO {
                 + "                   SET N_TITLE = ?"
                 + "                        , N_CONTENT = ?"
                 + "                        , MOD_DATE = current_date()"
-                + "                        , MOD_EMP_NO = ?"
+                + "                        , MOD_EMPNO = ?"
                 + "           WHERE N_NO = ?";
         
         try {
@@ -347,7 +349,7 @@ public class NoticeDAO {
                 pstmt.setString(6, "'%" + searchText + "%'");
                 pstmt.setString(7, "'%" + searchText + "%'");
                 pstmt.setInt(8, startRow -1);
-            
+
             rs = pstmt.executeQuery();
 
             while(rs.next()) {
@@ -366,34 +368,32 @@ public class NoticeDAO {
     }
     
     public int reply_write(int NO,int N_NO, int REPLY,  int RE_NO, String R_TITLE, String R_CONTENT, String P_ID) {
-         String SQL = "INSERT INTO TB_NOTICE "
-                 + "           (N_NO"
-                 + "          , REPLY"
-                 + "          , RE_NO"
-                 + "          , NO"
-                 + "          , N_TITLE"
-                 + "          , N_CONTENT"
-                 + "          , N_DATE"
-                 + "          , P_ID"
-                 + "           )"
-                 + "           VALUES"
-                 + "          (?"
-                 + "          ,(SELECT B.REPLY + 1"
-                 + "               FROM TB_NOTICE B"
-                 + "            WHERE N_NO = ?"
-                 + "                  AND B.REPLY = ?"
-                 + "                  AND B.RE_NO = ?"
-                 + "             )"
-                 + "           , (SELECT (IFNULL(MAX(RE_NO) + 1, 1)) "
-                 + "                FROM TB_NOTICE C"
-                 + "              WHERE C.N_NO = ?"
-                 + "                     AND C.REPLY = ? + 1)"
-                 + "        , ?"
-                 + "        , ?"
-                 + "        , ?"
-                 + "        , CURRENT_DATE()"
-                 + "        , ?"
-                 + "        )";
+        String SQL = "INSERT INTO TB_NOTICE "
+                +            " (N_NO"
+                +            ", REPLY"
+                +            ", RE_NO"
+                +            ", NO"
+                +            ", N_TITLE"
+                +            ", N_CONTENT"
+                +            ", N_DATE"
+                +            ", P_ID"
+                +            " )"
+                +            " VALUES"
+                +            "(?"
+                +            ",(SELECT B.REPLY + 1"
+                +            "     FROM TB_NOTICE B"
+                +            "  WHERE N_NO = ?"
+                +            "        AND B.REPLY = ?"
+                +            "   )"
+                +            " , (SELECT MAX(X.RE_NO) + 1"
+                +            "      FROM TB_NOTICE X"
+                +            "     WHERE X.N_NO = ?"
+                +            "       AND X.REPLY = ? + 1)"
+                +            ", ?"
+                +            ", '?'"
+                +            ", '?'"
+                +            ", current_date()"
+                +            ", ?)";
          
          try {
              PreparedStatement pstmt = conn.prepareStatement(SQL);

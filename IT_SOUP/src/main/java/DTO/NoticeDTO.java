@@ -7,29 +7,22 @@ public class NoticeDTO {
     private String N_TITLE;
     private String N_CONTENT;
     private String N_DATE;
-    private String D_DATE;
-    private String ID;
-    private int REPLY;
+    private int MOD_EMPNO;
+    private String MOD_DATE;
     private int RE_NO;
+    private int REPLY;
     private String P_ID;
-
+    private String ID;
+    
     public NoticeDTO() {
         super();
-    }
-    
-    public String getID() {
-        return ID;
-    }
-
-    public void setID(String iD) {
-        ID = iD;
     }
 
     public int getN_NO() {
         return N_NO;
     }
 
-    public  void setN_NO(int n_NO) {
+    public void setN_NO(int n_NO) {
         N_NO = n_NO;
     }
 
@@ -73,20 +66,20 @@ public class NoticeDTO {
         N_DATE = n_DATE;
     }
 
-    public String getD_DATE() {
-        return D_DATE;
+    public int getMOD_EMPNO() {
+        return MOD_EMPNO;
     }
 
-    public void setD_DATE(String d_DATE) {
-        D_DATE = d_DATE;
+    public void setMOD_EMPNO(int mOD_EMPNO) {
+        MOD_EMPNO = mOD_EMPNO;
     }
 
-    public int getREPLY() {
-        return REPLY;
+    public String getMOD_DATE() {
+        return MOD_DATE;
     }
 
-    public void setREPLY(int rEPLY) {
-        REPLY = rEPLY;
+    public void setMOD_DATE(String mOD_DATE) {
+        MOD_DATE = mOD_DATE;
     }
 
     public int getRE_NO() {
@@ -97,11 +90,27 @@ public class NoticeDTO {
         RE_NO = rE_NO;
     }
 
+    public int getREPLY() {
+        return REPLY;
+    }
+
+    public void setREPLY(int rEPLY) {
+        REPLY = rEPLY;
+    }
+
     public String getP_ID() {
         return P_ID;
     }
 
     public void setP_ID(String p_ID) {
         P_ID = p_ID;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String iD) {
+        ID = iD;
     }
 }

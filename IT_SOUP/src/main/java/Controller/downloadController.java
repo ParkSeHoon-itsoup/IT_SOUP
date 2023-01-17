@@ -25,11 +25,13 @@ public class downloadController extends HttpServlet {
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            String fileName = "일정관리(1차).xlsx";
+            String fileName = request.getParameter("fileName");
 //            String fileName = request.getParameter("FILENAME");
             
+            System.out.println("download filename = " + fileName);
+            
             // 다운로드 경로 (내려받을 파일경로를 설정한다.)
-            String filePath = "C:\\NEW";
+            String filePath = "C:\\Users\\chulg\\upload";
             
             // 경로와 파일명으로 파일 객체를 생성한다.
             File file  = new File(filePath, fileName);
