@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -33,9 +34,11 @@ public class notice_writeController extends HttpServlet {
         HttpSession session = request.getSession();
         String ID = (String)session.getAttribute("ID");
 
-        String uploadFilePath = "C:\\Users\\chulg\\upload";
+        ServletContext application = request.getServletContext();
+        String directory = application.getRealPath("\\upload\\");
+        System.out.println("directory = " + directory);
         
-        File path = new File(uploadFilePath);
+        File path = new File(directory);
         if(!path.exists()) {
             path.mkdirs();
         }
@@ -43,7 +46,7 @@ public class notice_writeController extends HttpServlet {
         int uploadFilesSizeLimit = 5*1024*1024;
         String encType = "UTF-8";
 
-        MultipartRequest multi = new MultipartRequest(request, uploadFilePath, uploadFilesSizeLimit,encType, new DefaultFileRenamePolicy());
+        MultipartRequest multi = new MultipartRequest(request, directory, uploadFilesSizeLimit,encType, new DefaultFileRenamePolicy());
         String N_TITLE = multi.getParameter("N_TITLE");
         String N_CONTENT = multi.getParameter("N_CONTENT");
         System.out.println("N_TITLE = " + N_TITLE);
@@ -83,22 +86,10 @@ public class notice_writeController extends HttpServlet {
                                 String file = (String)files.nextElement();
                                 String file_name = multi.getFilesystemName(file);
                                 String ori_file_name = multi.getOriginalFileName(file);
-                               
-
                                 
                                File f = multi.getFile(file);
                                
                                if(!("".equals(file_name) || null ==file_name)) {
-                                   
-                                   
-                                   
-
-                                   System.out.println("files: " + files);
-                                   System.out.println("file: " + file);
-                                   System.out.println("업로드된 파일명: " + file_name);
-                                   System.out.println("원본 파일명: " + ori_file_name);
-                                   
-                                   
                                    
                                    int resultAttach = fileDAO.regAttach(N_NO, file_name, ori_file_name);
                                    

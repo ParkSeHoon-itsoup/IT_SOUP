@@ -26,7 +26,6 @@ public class downloadController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             String fileName = request.getParameter("fileName");
-//            String fileName = request.getParameter("FILENAME");
             
             System.out.println("download filename = " + fileName);
             

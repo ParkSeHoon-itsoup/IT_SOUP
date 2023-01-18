@@ -34,6 +34,7 @@ public class mod_notice_write extends HttpServlet {
         
         
         int N_NO = Integer.parseInt(request.getParameter("N_NO"));
+        String F_NAME = request.getParameter("F_NAME");
         
         String uploadFilePath = "C:\\NEW";
         

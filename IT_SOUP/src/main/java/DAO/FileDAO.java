@@ -50,9 +50,10 @@ public class FileDAO {
     }
     
     public ArrayList<FileDTO> getList(int N_NO){
-        String SQL = "SELECT F_REALNAME "
-                + "             FROM TB_ATTACH "
-                + "           WHERE N_NO = ?";
+        String SQL = "SELECT TRIM(F_REALNAME)"
+                + "        , TRIM(F_NAME)"
+                + "     FROM TB_ATTACH "
+                + "    WHERE N_NO = ?";
         
         try {
             ArrayList<FileDTO> list = new ArrayList<FileDTO>();
@@ -65,6 +66,7 @@ public class FileDAO {
             while(rs.next()) {
                 FileDTO fileDTO = new FileDTO();
                 fileDTO.setF_REALNAME(rs.getString(1));
+                fileDTO.setF_NAME(rs.getString(2));
                 list.add(fileDTO);
             }
             return list;

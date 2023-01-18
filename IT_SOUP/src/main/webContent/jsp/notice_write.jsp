@@ -54,36 +54,12 @@ function check(){
     }
 }
 
-function addRow(){
-    var dynamicTable = document.getElementById('dynamic_table');
-    var newRow = dynamicTable.insertRow();
-    var cell1 = newRow.insertCell();
-    var cell2 = newRow.insertCell();
-    
-    cell1.innerHTML = '<input type="checkbox" name="checkboxObj"/>';
-    cell2.innerHTML = '<input type="file" id="filesize" name="fileupload' + count+'" size="70" onchange="checkSize(this)">';
-    count++
-}
-
 function checkSize(input){
-    	if(input.files && input.files[0].size > (5*1024*1024)){
+        if(input.files && input.files[0].size > (5*1024*1024)){
             alert("파일 사이즈가 5MB를 초과하였습니다.");
             $(input).val("");
             return false;
     }
-}
-
-function deleteRow() {
-   var table = document.getElementById('dynamic_table');
-   var checkboxArray = document.getElementsByName('checkboxObj');
-   
-   for (var i=checkboxArray.length-1; i>=0; i--) {
-      var check = checkboxArray[i].checked;
-      
-      if (check) {
-         table.deleteRow(i);
-      }
-   }
 }
 </script>
 </head>
@@ -156,7 +132,7 @@ function deleteRow() {
                 </thead>
                 <tbody>
                     <tr>
-                         <td><input type="text" class="form-control" placeholder="글 제목" name="N_TITLE" maxlength="50"></td> 
+                      <td><input type="text" class="form-control" placeholder="글 제목" name="N_TITLE" maxlength="50"></td> 
                     </tr>
                     <tr>
                          <td><textarea class="form-control" placeholder="글 내용" name="N_CONTENT" maxlength="2048" style="height:350px;"></textarea></td>
@@ -165,10 +141,12 @@ function deleteRow() {
                 </table>
                  <input type="submit" class="btn btn-primary" style="position:relative; left:1050px;" value="등록">
                  <a href="notice.jsp" class="btn btn-primary" style="position:relative; left:1050px;">목록</a>
-                 <input type="button"class="btn btn-primary"  value="첨부파일 추가" onClick="addRow();" style="position:relative; right:115px;">
-                 <input type="button"class="btn btn-primary"  value="첨부파일 삭제" onClick="deleteRow();" style="position:relative; right:115px;">
-                 <table id="dynamic_table" border="1"></table>
+                 <div class = "form-group">파일
+                    <input type="file" name="fname1" id="fname1" class="form-control-file border" onchange="checkSize(this)"/>
+                    <input type="file" name="fname2" id="fname2" class="form-control-file border" onchange="checkSize(this)"/>
+                    <input type="file" name="fname3" id="fname3" class="form-control-file border" onchange="checkSize(this)"/>
                     <h5><font color="red">업로드할 팔인은 최대 5MB까지 업로드 가능</font></h5>
+                 </div>
              </form>
         </div>
     </div>
@@ -286,15 +264,13 @@ function deleteRow() {
                          <td style="width:150px; ">내용</td><td colspan= "2" style="min-height: 400px; text-align: left;"><%= notice_read.getN_CONTENT()%> </td>
                     </tr>
                 </tbody>
-<!--                 <a  href="downloadController" class="btn btn-primary">다운로드</a> -->
                 </table>
                 <%
                 int NNO = notice_read.getNO();
                 if("01".equals(LEVEL) ||("02".equals(LEVEL) && NO == NNO)){
-                %>
+                     %>
              <a onClick="return confirm('정말로 삭제하시겠습니까?');" href="delete_notice_writeController?N_NO=<%=N_NO %>" class="btn btn-primary" style="position:relative; left:1120px;px;px; top: -10px;">삭제</a>
              <a href="notice_write.jsp?N_NO=<%=N_NO %>&REPLY=<%=REPLY%>&RE_NO=<%=RE_NO %>&formNm=mod_notice_write" class="btn btn-primary pull-right" style="position:relative; right:65px; top:-10px;">수정</a>
-<%--              <a href="notice_write.jsp?N_NO=<%=N_NO %>&REPLY=<%= REPLY%>&RE_NO=<%=RE_NO %>&formNm=reply_write" class="btn btn-primary pull-right" style="position:relative; right:65px;">댓글 작성</a> --%>
              <a href="notice.jsp" class="btn btn-primary pull-right" style="position:relative; right:80px; top:-10px;">목록</a>
              <%
                 } else {
