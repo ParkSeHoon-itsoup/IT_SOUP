@@ -28,8 +28,8 @@ public class NoticeDAO {
     
     public int findNo(String ID) {
         String SQL = "SELECT NO"
-                + "              FROM TB_EMP "
-                + "           WHERE ID = ?";
+                + "     FROM TB_EMP "
+                + "    WHERE ID = ?";
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
@@ -48,7 +48,7 @@ public class NoticeDAO {
     
     public int findN_NO() {
         String SQL = "SELECT IFNULL(MAX(N_NO), 0) + 1"
-                +"              FROM TB_NOTICE";
+                +"      FROM TB_NOTICE";
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
@@ -63,7 +63,7 @@ public class NoticeDAO {
         return -1;
     }
     
-    public int write(NoticeDTO noticeDTO) {
+    public int write(int N_NO, int NO, String N_TITLE, String N_CONTENT) {
         String SQL = "INSERT INTO TB_NOTICE "
                 + "          (N_NO"
                 + "         , NO"
@@ -85,10 +85,10 @@ public class NoticeDAO {
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
-            pstmt.setInt(1, noticeDTO.getN_NO());
-            pstmt.setInt(2, noticeDTO.getNO());
-            pstmt.setString(3,noticeDTO.getN_TITLE());
-            pstmt.setString(4, noticeDTO.getN_CONTENT());
+            pstmt.setInt(1, N_NO);
+            pstmt.setInt(2, NO);
+            pstmt.setString(3, N_TITLE);
+            pstmt.setString(4, N_CONTENT);
             
             return pstmt.executeUpdate();
         } catch(Exception e) {
@@ -233,7 +233,7 @@ public class NoticeDAO {
         
         
         String SQL = "SELECT A.N_TITLE"
-                + "                        , B.NAME"
+                + "        , B.NAME"
                 + "                        , A.N_DATE"
                 + "                        , A.N_CONTENT"
                 + "                        , A.NO"
@@ -383,7 +383,7 @@ public class NoticeDAO {
                 +            ",(SELECT B.REPLY + 1"
                 +            "     FROM TB_NOTICE B"
                 +            "  WHERE N_NO = ?"
-                +            "        AND B.REPLY = ?"
+                +            "    AND B.REPLY = ?"
                 +            "   )"
                 +            " , (SELECT MAX(X.RE_NO) + 1"
                 +            "      FROM TB_NOTICE X"

@@ -29,18 +29,22 @@ public class FileDAO {
                 +            "(N_NO"
                 +            ",F_NAME"
                 +            ",F_REALNAME"
+                +            ",F_NO"
                 +            ")"
                 +            "VALUES"
                 +            "(?"
                 +            ",?"
                 +            ",?"
+                +            ",(SELECT IFNULL(MAX(B.F_NO), 0) + 1"
+                +            "    FROM TB_ATTACH B"
+                +            "   WHERE B.N_NO = ?)"
                 +            ")";
-        
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
             pstmt.setInt(1, N_NO);
             pstmt.setString(2, F_NAME);
             pstmt.setString(3, F_REALNAME);
+            pstmt.setInt(4, N_NO);
             
             return pstmt.executeUpdate();
         } catch(Exception e) {
