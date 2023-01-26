@@ -54,8 +54,9 @@ public class FileDAO {
     }
     
     public ArrayList<FileDTO> getList(int N_NO){
-        String SQL = "SELECT TRIM(F_REALNAME)"
-                + "        , TRIM(F_NAME)"
+        String SQL = "SELECT TRIM(F_REALNAME) AS F_REALNAME "
+                + "        , TRIM(F_NAME) AS F_NAME "
+                + "        , F_NO"
                 + "     FROM TB_ATTACH "
                 + "    WHERE N_NO = ?";
         
@@ -71,6 +72,7 @@ public class FileDAO {
                 FileDTO fileDTO = new FileDTO();
                 fileDTO.setF_REALNAME(rs.getString(1));
                 fileDTO.setF_NAME(rs.getString(2));
+                fileDTO.setF_NO(rs.getInt(3));
                 list.add(fileDTO);
             }
             return list;
@@ -82,8 +84,8 @@ public class FileDAO {
     
     public int deldelAttach(int N_NO) {
         String SQL = "DELETE"
-                + "              FROM TB_ATTACH"
-                + "            WHERE N_NO = ?";
+                + "     FROM TB_ATTACH"
+                + "    WHERE N_NO = ?";
         
         try {
             PreparedStatement pstmt = conn.prepareStatement(SQL);
@@ -92,6 +94,24 @@ public class FileDAO {
             return pstmt.executeUpdate();
         } catch(Exception e) {
             System.out.println("첨부파일 삭제 실패 : " + e);
+        }
+        return -1;
+    }
+    
+    public int updateDeleteAttach(int N_NO, int idx) {
+        String SQL= "DELETE "
+                + "    FROM TB_ATTACH "
+                + "   WHERE N_NO = ? "
+                + "     AND F_NO = ?";
+        
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(SQL);
+            pstmt.setInt(1, N_NO);
+            pstmt.setInt(2, idx);
+            
+            return pstmt.executeUpdate();
+        } catch(Exception e) {
+            System.out.println("첨부파일 수정삭제 실패 : " +e);
         }
         return -1;
     }

@@ -4,6 +4,7 @@ public class FileDTO {
     private int N_NO;
     private String F_NAME;
     private String F_REALNAME;
+    private int F_NO;
     
     public FileDTO(){
         super();
@@ -31,5 +32,13 @@ public class FileDTO {
 
     public void setF_REALNAME(String f_REALNAME) {
         F_REALNAME = f_REALNAME;
+    }
+
+    public int getF_NO() {
+        return F_NO;
+    }
+
+    public void setF_NO(int f_NO) {
+        F_NO = f_NO;
     }
 }

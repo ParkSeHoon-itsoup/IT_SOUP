@@ -99,6 +99,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
     $("button[name='delButton1']").on("click", function(e){
+        alert(document.getElementById("#delete_btn1"));
         $("#delete_btn1").remove();
         $("#update_btn1").remove();
         $("#list1").remove();
@@ -108,6 +109,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
     $("button[name='delButton2']").on("click", function(e){
+        alert(document.getElementById("#delete_btn2"));
         $("#delete_btn2").remove();
         $("#update_btn2").remove();
         $("#list2").remove();
@@ -338,6 +340,10 @@ function submitForm() {
          int N_NO = Integer.parseInt(request.getParameter("N_NO"));
          int REPLY = Integer.parseInt(request.getParameter("REPLY"));
          int RE_NO = Integer.parseInt(request.getParameter("RE_NO"));
+    FileDAO fileDAO = new FileDAO();
+    ArrayList<FileDTO> attachFile = fileDAO.getList(N_NO);
+    
+    int size = attachFile.size();
     %>
         <div class="container">
         <div class="row">
@@ -354,10 +360,10 @@ function submitForm() {
                         NoticeDTO notice_read = noticeDAO.notice_read(N_NO, REPLY, RE_NO);
                     %>
                     <tr>
-                         <td style="width:150px; ">제목</td><td><input  class="form-control" style="text-align: left;" placeholder= "<%= notice_read.getN_TITLE() %>" name="N_TITLE" id = "N_TITLE"></td> 
+                         <td style="width:150px; ">제목</td><td><input class="form-control" style="text-align: left;" name="N_TITLE" id = "N_TITLE" value=<%= notice_read.getN_TITLE() %>></td> 
                     </tr>
                     <tr>
-                         <td style="width:150px; ">내용</td><td><textarea class="form-control"  style="min-height: 250px; text-align: left;" placeholder="<%= notice_read.getN_CONTENT()%>" name="N_CONTENT" id = "N_CONTENT"></textarea></td>
+                         <td style="width:150px; ">내용</td><td><textarea class="form-control"  style="min-height: 250px; text-align: left;" name="N_CONTENT" id = "N_CONTENT"><%= notice_read.getN_CONTENT()%></textarea></td>
                     </tr>
                 </tbody>
                 </table>
@@ -373,11 +379,6 @@ function submitForm() {
              
 <!--                  <div class = "form-group">파일 -->
              <%
-             FileDAO fileDAO = new FileDAO();
-             ArrayList<FileDTO> attachFile = fileDAO.getList(N_NO);
-             
-             int size = attachFile.size();
-             
              if(size == 3){
              %>
                 <div>
@@ -392,8 +393,13 @@ function submitForm() {
                         %>
                         <tbody>
                             <tr>
-                               <td id="list<%=i %>" style="width:70%;"><a href="downloadController?fileName=<%= attachFile.get(i).getF_REALNAME() %>"><%= attachFile.get(i).getF_REALNAME() %></a>
+                               <td id="list<%=i %>" style="width:70%;"><a href="downloadController?fileName=<%= attachFile.get(i).getF_REALNAME() %>"><%= attachFile.get(i).getF_NAME() %></a>
                                <td id="delete_btn<%=i %>" style="position:relative; right:15px;"><button type="button" name="delButton<%=i %>" class="form-control-file border">삭제</button>
+                               <input type = "hidden" name="F_NO" value="<%=attachFile.get(i).getF_NO() %>">
+                               <script>
+                                   var name = <%=attachFile.get(i).getF_NO() %>;
+                                   alert("name = " + name);
+                               </script>
                             </tr>
                         </tbody>
                          <%
@@ -422,6 +428,11 @@ function submitForm() {
                             <tr>
                                <td id="list<%=i %>" style="width:70%;"><a href="downloadController?fileName=<%= attachFile.get(i).getF_REALNAME() %>"><%= attachFile.get(i).getF_REALNAME() %></a>
                                <td id="delete_btn<%=i %>" style="position:relative; right:15px;"><button type="button" name="delButton<%=i %>" class="form-control-file border">삭제</button>
+                               <input type = "hidden" name="F_NO" value="<%=attachFile.get(i).getF_NO() %>">
+                               <script>
+                                   var name = <%=attachFile.get(i).getF_NO() %>;
+                                   alert("name = " + name);
+                               </script>
                             </tr>
                         </tbody>
                          <%
@@ -453,6 +464,11 @@ function submitForm() {
                             <tr>
                                <td id="list<%=i %>" style="width:70%;"><a href="downloadController?fileName=<%= attachFile.get(i).getF_REALNAME() %>"><%= attachFile.get(i).getF_REALNAME() %></a>
                                <td id="delete_btn<%=i %>" style="position:relative; right:15px;"><button type="button" name="delButton<%=i %>" class="form-control-file border">삭제</button>
+                               <input type = "hidden" name="F_NO" value="<%=attachFile.get(i).getF_NO() %>">
+                               <script>
+                                   var name = <%=attachFile.get(i).getF_NO() %>;
+                                   alert("name = " + name);
+                               </script>
                             </tr>
                         </tbody>
                          <%

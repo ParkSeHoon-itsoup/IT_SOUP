@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -22,12 +21,8 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-import com.oreilly.servlet.MultipartRequest;
-import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
-
 import DAO.FileDAO;
 import DAO.NoticeDAO;
-import DTO.NoticeDTO;
 
 @WebServlet("/notice_writeController")
 public class notice_writeController extends HttpServlet {
@@ -49,27 +44,25 @@ public class notice_writeController extends HttpServlet {
         
         int N_NO = noticeDAO.findN_NO();
 
-            ServletContext application = request.getServletContext();
-            String directory = application.getRealPath("\\upload\\");
-            int uploadFilesSizeLimit = 5*1024*1024;
-            
-    //        String saveDir = "C:\\Users\\chulg\\eclipse-workspace\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps\\IT_SOUP\\upload";
-    //        int size = 5 * 1024 * 1024;
-            
-            File currentDir = new File(directory);
-            DiskFileItemFactory factory = new DiskFileItemFactory();
-            factory.setRepository(currentDir);
-            factory.setSizeThreshold(uploadFilesSizeLimit);
-            
-            ServletFileUpload upload = new ServletFileUpload(factory);
-            List items = null;
-            try {
-                items = upload.parseRequest(request);
-            } catch(FileUploadException e) {
-                System.out.println("에러 1 :" + e);
-            }
-            try {
-                Iterator itr = items.iterator();
+        ServletContext application = request.getServletContext();
+        String directory = application.getRealPath("\\upload\\");
+        int uploadFilesSizeLimit = 5*1024*1024;
+                    
+        File currentDir = new File(directory);
+        DiskFileItemFactory factory = new DiskFileItemFactory();
+        factory.setRepository(currentDir);
+        factory.setSizeThreshold(uploadFilesSizeLimit);
+        
+        ServletFileUpload upload = new ServletFileUpload(factory);
+        List items = null;
+        try {
+            items = upload.parseRequest(request);
+        } catch(FileUploadException e) {
+            System.out.println("파싱에러 :" + e);
+        }
+        try {
+            Iterator itr = items.iterator();
+            if(itr.hasNext()) {
                 while(itr.hasNext()) {
                     FileItem item = (FileItem)itr.next();
                     if(item.isFormField()) {
@@ -78,16 +71,12 @@ public class notice_writeController extends HttpServlet {
                             System.out.println("N_TITLE = " + N_TITLE);
                             
                             session.setAttribute("N_TITLE", N_TITLE);
-                            
-                            session.setAttribute("N_TITLE", N_TITLE);
                         } else if(item != null && item.getFieldName().equals("N_CONTENT")) {
                             String N_CONTENT = item.getString();
                             System.out.println("N_CONTENT = " + N_CONTENT);
 
                             session.setAttribute("N_CONTENT", N_CONTENT);
                         }
-                        
-                        
                     } else {
                     System.out.println("else_getFieldName = " + item.getFieldName());
                     
@@ -108,23 +97,37 @@ public class notice_writeController extends HttpServlet {
                         upPath.mkdirs();
                     }
                     
-                    
                     FileDAO fileDAO = new FileDAO();
                     int resultAttach = fileDAO.regAttach(N_NO, name, origin);
                     
                     item.write(new File(upPath, name));
                     }
-
                 }
+            } else {
                 String N_TITLE = (String)session.getAttribute("N_TITLE");
                 String N_CONTENT = (String)session.getAttribute("N_CONTENT");
                 int result = noticeDAO.write(N_NO, NO, N_TITLE, N_CONTENT);
                 
+                if(result == -1) {
+                    PrintWriter script = response.getWriter();
+                    script.println("<script>");
+                    script.println("alert('파일업로드에 실패하였습니다.')");
+                    script.println("location.href='notice.jsp'");
+                    script.println("</script>");
+                } else {
+                    PrintWriter script = response.getWriter();
+                    script.println("<script>");
+                    script.println("alert('글쓰기에 성공하였습니다.')");
+                    script.println("location.href='notice.jsp'");
+                    script.println("</script>");
+                }
+                
                 session.removeAttribute("N_TITLE");
                 session.removeAttribute("N_CONTENTTITLE");
-            } catch(Exception e) {
-                System.out.println("씨발 : " + e);
             }
+        } catch(Exception e) {
+            System.out.println("파일업로드 에러_Controller : " + e);
+        }
     }
     
     private String getTodayStr() {
