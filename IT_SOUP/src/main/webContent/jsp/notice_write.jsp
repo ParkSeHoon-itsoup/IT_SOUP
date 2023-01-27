@@ -89,9 +89,9 @@ function checkSize(input){
 
 $(document).ready(function(){
     $("button[name='delButton0']").on("click", function(e){
-        alert(document.getElementById("#delete_btn0"));
+//         alert(document.getElementById("#delete_btn0"));
         $("#delete_btn0").remove();
-        $("#update_btn0").remove();
+//         $("#update_btn0").remove();
         $("#list0").remove();
         addRow();
     });
@@ -99,9 +99,9 @@ $(document).ready(function(){
 
 $(document).ready(function(){
     $("button[name='delButton1']").on("click", function(e){
-        alert(document.getElementById("#delete_btn1"));
+//         alert(document.getElementById("#delete_btn1"));
         $("#delete_btn1").remove();
-        $("#update_btn1").remove();
+//         $("#update_btn1").remove();
         $("#list1").remove();
         addRow();
     });
@@ -109,9 +109,9 @@ $(document).ready(function(){
 
 $(document).ready(function(){
     $("button[name='delButton2']").on("click", function(e){
-        alert(document.getElementById("#delete_btn2"));
+//         alert(document.getElementById("#delete_btn2"));
         $("#delete_btn2").remove();
-        $("#update_btn2").remove();
+//         $("#update_btn2").remove();
         $("#list2").remove();
         addRow();
     });
@@ -393,7 +393,7 @@ function submitForm() {
                         %>
                         <tbody>
                             <tr>
-                               <td id="list<%=i %>" style="width:70%;"><a href="downloadController?fileName=<%= attachFile.get(i).getF_REALNAME() %>"><%= attachFile.get(i).getF_NAME() %></a>
+                               <td id="list<%=i %>" style="width:70%;"><a href="downloadController?fileName=<%= attachFile.get(i).getF_REALNAME() %>"><%= attachFile.get(i).getF_REALNAME() %></a>
                                <td id="delete_btn<%=i %>" style="position:relative; right:15px;"><button type="button" name="delButton<%=i %>" class="form-control-file border">삭제</button>
                                <input type = "hidden" name="F_NO" value="<%=attachFile.get(i).getF_NO() %>">
                                <script>

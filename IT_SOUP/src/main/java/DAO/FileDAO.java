@@ -54,8 +54,8 @@ public class FileDAO {
     }
     
     public ArrayList<FileDTO> getList(int N_NO){
-        String SQL = "SELECT TRIM(F_REALNAME) AS F_REALNAME "
-                + "        , TRIM(F_NAME) AS F_NAME "
+        String SQL = "SELECT F_REALNAME"
+                + "        , F_NAME"
                 + "        , F_NO"
                 + "     FROM TB_ATTACH "
                 + "    WHERE N_NO = ?";
