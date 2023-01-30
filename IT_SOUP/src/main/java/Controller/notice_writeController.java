@@ -52,10 +52,10 @@ public class notice_writeController extends HttpServlet {
         String directory = application.getRealPath("\\upload\\");
         int uploadFilesSizeLimit = 5*1024*1024;
                     
-        File currentDir = new File(directory);
         DiskFileItemFactory factory = new DiskFileItemFactory();
-        factory.setRepository(currentDir);
+        factory.setRepository(new File(directory));
         factory.setSizeThreshold(uploadFilesSizeLimit);
+        factory.setDefaultCharset("utf-8");
         
         ServletFileUpload upload = new ServletFileUpload(factory);
         List items = null;
@@ -63,9 +63,7 @@ public class notice_writeController extends HttpServlet {
             
             items = upload.parseRequest(request);
             
-            
-            
-
+            System.out.println("size = " + items.size());
             
             for(int i=0; i<items.size();i++) {
                 System.out.println(items.get(i));
@@ -93,122 +91,125 @@ public class notice_writeController extends HttpServlet {
             System.out.println("파싱에러 :" + e);
         }
         try {
-            Iterator itr = items.iterator();
-            String beforeSplit = items.get(2).toString();
-            String[] afterSplit = beforeSplit.split(", ");
-            String bytes = "size=0 bytes";
-            if(!afterSplit[2].equals(bytes)) {
-                request.setCharacterEncoding("utf-8");
-                response.setContentType("text/html; charset=utf-8");
-                response.setCharacterEncoding("utf-8");
-                
-                
-                
-                
-                
-                System.out.println("파일O");
-                
-                
-
-                while(itr.hasNext()) {
-                    FileItem item = (FileItem)itr.next();
-                    if(item.isFormField()) {
-                        if(item != null && item.getFieldName().equals("N_TITLE")) {
-                            String N_TITLE = item.getString();
-                            System.out.println("N_TITLE = " + N_TITLE);
-                            session.setAttribute("N_TITLE", N_TITLE);
-                        } else if(item != null && item.getFieldName().equals("N_CONTENT")) {
-                            String N_CONTENT = item.getString();
-                            System.out.println("N_CONTENT = " + N_CONTENT);
-                            session.setAttribute("N_CONTENT", N_CONTENT);
-                        }
-                    } else {
-                    System.out.println("else_getFieldName = " + item.getFieldName());
-                    
-                    String origin = item.getName();
-                    
-                    System.out.println("origin = " + origin);
-                    
-                    String ext = origin.substring(origin.lastIndexOf("."));
-                    
-                    UUID uuid = UUID.randomUUID();
-                    String name = origin;
-                    
-                    System.out.println("name = " + name);
-                    
-                    System.out.println(item.getSize());
-                    File upPath = new File(currentDir + "\\" + getTodayStr());
-                    if(!upPath.exists()) {
-                        upPath.mkdirs();
-                    }
-                    
-                    FileDAO fileDAO = new FileDAO();
-                    int resultAttach = fileDAO.regAttach(N_NO, name, origin);
-                    
-                    item.write(new File(upPath, name));
-                    }
-                }
-                String N_TITLE = (String)session.getAttribute("N_TITLE");
-                String N_CONTENT = (String)session.getAttribute("N_CONTENT");
-                int result = noticeDAO.write(N_NO, NO, N_TITLE, N_CONTENT);
-                
-                if(result == -1) {
-                    PrintWriter script = response.getWriter();
-                    script.println("<script>");
-                    script.println("alert('파일업로드에 실패하였습니다(파일O)')");
-                    script.println("location.href='notice.jsp'");
-                    script.println("</script>");
-                } else {
-                    PrintWriter script = response.getWriter();
-                    script.println("<script>");
-                    script.println("alert('글쓰기에 성공하였습니다(파일O)')");
-                    script.println("location.href='notice.jsp'");
-                    script.println("</script>");
-                }
+            if(items.size() >5) {
+                PrintWriter script = response.getWriter();
+                script.println("<script>");
+                script.println("alert('첨부파일은 최대 3개까지업로드 할 수 있습니다.')");
+                script.println("history.back()");
+                script.println("</script>");
             } else {
-                System.out.println("파일X");
-                while(itr.hasNext()) {
-                    FileItem item = (FileItem)itr.next();
-                    if(item.isFormField()) {
-                        if(item != null && item.getFieldName().equals("N_TITLE")) {
-                            String N_TITLE = item.getString();
-                            System.out.println("N_TITLE = " + N_TITLE);
-                            session.setAttribute("N_TITLE", N_TITLE);
-                        } else if(item != null && item.getFieldName().equals("N_CONTENT")) {
-                            String N_CONTENT = item.getString();
-                            System.out.println("N_CONTENT = " + N_CONTENT);
-                            session.setAttribute("N_CONTENT", N_CONTENT);
+                Iterator itr = items.iterator();
+                String beforeSplit = items.get(2).toString();
+                String[] afterSplit = beforeSplit.split(", ");
+                String bytes = "size=0 bytes";
+                if(!afterSplit[2].equals(bytes)) {
+                    
+                    request.setCharacterEncoding("utf-8");
+                    response.setContentType("text/html; charset=utf-8");
+                    response.setCharacterEncoding("utf-8");
+                    
+                    
+                    
+                    
+                    
+                    System.out.println("파일O");
+
+                    while(itr.hasNext()) {
+                        FileItem item = (FileItem)itr.next();
+                        if(item.isFormField()) {
+                            if(item != null && item.getFieldName().equals("N_TITLE")) {
+                                String N_TITLE = item.getString();
+                                System.out.println("N_TITLE = " + N_TITLE);
+                                session.setAttribute("N_TITLE", N_TITLE);
+                            } else if(item != null && item.getFieldName().equals("N_CONTENT")) {
+                                String N_CONTENT = item.getString();
+                                System.out.println("N_CONTENT = " + N_CONTENT);
+                                session.setAttribute("N_CONTENT", N_CONTENT);
+                            }
+                        } else {
+                        System.out.println("else_getFieldName = " + item.getFieldName());
+                        
+                        String origin = item.getName();
+                        
+                        System.out.println("origin = " + origin);
+                        
+                        String ext = origin.substring(origin.lastIndexOf("."));
+                        
+                        UUID uuid = UUID.randomUUID();
+                        String name = origin;
+                        
+                        System.out.println("name = " + name);
+                        
+                        System.out.println(item.getSize());
+                        File upPath = new File(directory);
+                        if(!upPath.exists()) {
+                            upPath.mkdirs();
+                        }
+                        
+                        FileDAO fileDAO = new FileDAO();
+                        int resultAttach = fileDAO.regAttach(N_NO, name, origin);
+                        
+                        item.write(new File(upPath, name));
                         }
                     }
-                }
-                
-                String N_TITLE = (String)session.getAttribute("N_TITLE");
-                String N_CONTENT = (String)session.getAttribute("N_CONTENT");
-                int result = noticeDAO.write(N_NO, NO, N_TITLE, N_CONTENT);
-                
-                if(result == -1) {
-                    PrintWriter script = response.getWriter();
-                    script.println("<script>");
-                    script.println("alert('파일업로드에 실패하였습니다.')");
-                    script.println("location.href='notice.jsp'");
-                    script.println("</script>");
+                    String N_TITLE = (String)session.getAttribute("N_TITLE");
+                    String N_CONTENT = (String)session.getAttribute("N_CONTENT");
+                    int result = noticeDAO.write(N_NO, NO, N_TITLE, N_CONTENT);
+                    
+                    if(result == -1) {
+                        PrintWriter script = response.getWriter();
+                        script.println("<script>");
+                        script.println("alert('파일업로드에 실패하였습니다(파일O)')");
+                        script.println("location.href='notice.jsp'");
+                        script.println("</script>");
+                    } else {
+                        PrintWriter script = response.getWriter();
+                        script.println("<script>");
+                        script.println("alert('글쓰기에 성공하였습니다(파일O)')");
+                        script.println("location.href='notice.jsp'");
+                        script.println("</script>");
+                    }
                 } else {
-                    PrintWriter script = response.getWriter();
-                    script.println("<script>");
-                    script.println("alert('글쓰기에 성공하였습니다(파일X)')");
-                    script.println("location.href='notice.jsp'");
-                    script.println("</script>");
+                    System.out.println("파일X");
+                    while(itr.hasNext()) {
+                        FileItem item = (FileItem)itr.next();
+                        if(item.isFormField()) {
+                            if(item != null && item.getFieldName().equals("N_TITLE")) {
+                                String N_TITLE = item.getString();
+                                System.out.println("N_TITLE = " + N_TITLE);
+                                session.setAttribute("N_TITLE", N_TITLE);
+                            } else if(item != null && item.getFieldName().equals("N_CONTENT")) {
+                                String N_CONTENT = item.getString();
+                                System.out.println("N_CONTENT = " + N_CONTENT);
+                                session.setAttribute("N_CONTENT", N_CONTENT);
+                            }
+                        }
+                    }
+                    
+                    String N_TITLE = (String)session.getAttribute("N_TITLE");
+                    String N_CONTENT = (String)session.getAttribute("N_CONTENT");
+                    int result = noticeDAO.write(N_NO, NO, N_TITLE, N_CONTENT);
+                    
+                    if(result == -1) {
+                        PrintWriter script = response.getWriter();
+                        script.println("<script>");
+                        script.println("alert('파일업로드에 실패하였습니다.')");
+                        script.println("location.href='notice.jsp'");
+                        script.println("</script>");
+                    } else {
+                        PrintWriter script = response.getWriter();
+                        script.println("<script>");
+                        script.println("alert('글쓰기에 성공하였습니다(파일X)')");
+                        script.println("location.href='notice.jsp'");
+                        script.println("</script>");
+                    }
+                    
+                    session.removeAttribute("N_TITLE");
+                    session.removeAttribute("N_CONTENTTITLE");
                 }
-                
-                session.removeAttribute("N_TITLE");
-                session.removeAttribute("N_CONTENTTITLE");
             }
         } catch(Exception e) {
             System.out.println("파일업로드 에러_Controller : " + e);
         }
-    }
-    
-    private String getTodayStr() {
-        return new SimpleDateFormat("yyyy/MM/dd").format(System.currentTimeMillis());
     }
 }

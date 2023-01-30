@@ -302,7 +302,7 @@ function submitForm() {
                 </table>
                  <input type="submit" class="btn btn-primary" style="position:relative; left:1050px;" value="등록">
                  <a href="notice.jsp" class="btn btn-primary" style="position:relative; left:1050px;">목록</a>
-                <input type="file" name="fi" multiple />
+                <input type="file" name="fi" multiple maxlength="3"/>
                 <div class="file-list"></div>
              </form>
         </div>
@@ -377,7 +377,7 @@ function submitForm() {
              %>
              <a href="notice.jsp" class="btn btn-primary pull-right" style="position:relative; left:50px; top:-5px;">목록</a>
              
-<!--                  <div class = "form-group">파일 -->
+<!--              <div class = "form-group">파일 -->
              <%
              if(size == 3){
              %>
@@ -396,10 +396,6 @@ function submitForm() {
                                <td id="list<%=i %>" style="width:70%;"><a href="downloadController?fileName=<%= attachFile.get(i).getF_REALNAME() %>"><%= attachFile.get(i).getF_REALNAME() %></a>
                                <td id="delete_btn<%=i %>" style="position:relative; right:15px;"><button type="button" name="delButton<%=i %>" class="form-control-file border">삭제</button>
                                <input type = "hidden" name="F_NO" value="<%=attachFile.get(i).getF_NO() %>">
-                               <script>
-                                   var name = <%=attachFile.get(i).getF_NO() %>;
-                                   alert("name = " + name);
-                               </script>
                             </tr>
                         </tbody>
                          <%
@@ -429,10 +425,6 @@ function submitForm() {
                                <td id="list<%=i %>" style="width:70%;"><a href="downloadController?fileName=<%= attachFile.get(i).getF_REALNAME() %>"><%= attachFile.get(i).getF_REALNAME() %></a>
                                <td id="delete_btn<%=i %>" style="position:relative; right:15px;"><button type="button" name="delButton<%=i %>" class="form-control-file border">삭제</button>
                                <input type = "hidden" name="F_NO" value="<%=attachFile.get(i).getF_NO() %>">
-                               <script>
-                                   var name = <%=attachFile.get(i).getF_NO() %>;
-                                   alert("name = " + name);
-                               </script>
                             </tr>
                         </tbody>
                          <%
@@ -465,10 +457,6 @@ function submitForm() {
                                <td id="list<%=i %>" style="width:70%;"><a href="downloadController?fileName=<%= attachFile.get(i).getF_REALNAME() %>"><%= attachFile.get(i).getF_REALNAME() %></a>
                                <td id="delete_btn<%=i %>" style="position:relative; right:15px;"><button type="button" name="delButton<%=i %>" class="form-control-file border">삭제</button>
                                <input type = "hidden" name="F_NO" value="<%=attachFile.get(i).getF_NO() %>">
-                               <script>
-                                   var name = <%=attachFile.get(i).getF_NO() %>;
-                                   alert("name = " + name);
-                               </script>
                             </tr>
                         </tbody>
                          <%
@@ -571,7 +559,13 @@ function submitForm() {
                 if("01".equals(LEVEL) ||("02".equals(LEVEL) && NO == NNO)){
                      %>
              <a onClick="return confirm('정말로 삭제하시겠습니까?');" href="delete_notice_writeController?N_NO=<%=N_NO %>" class="btn btn-primary" style="position:relative; left:1120px;px;px; top: -10px;">삭제</a>
+             <%
+             if(NO == NNO){
+             %>
              <a href="notice_write.jsp?N_NO=<%=N_NO %>&REPLY=<%=REPLY%>&RE_NO=<%=RE_NO %>&formNm=mod_notice_write" class="btn btn-primary pull-right" style="position:relative; right:65px; top:-10px;">수정</a>
+             <%
+                }
+             %>
              <a href="notice.jsp" class="btn btn-primary pull-right" style="position:relative; right:80px; top:-10px;">목록</a>
              <%
                 } else {
