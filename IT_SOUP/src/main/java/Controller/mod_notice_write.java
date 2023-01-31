@@ -57,9 +57,12 @@ public class mod_notice_write extends HttpServlet {
         String N_TITLE = multi.getParameter("N_TITLE");
         String N_CONTENT = multi.getParameter("N_CONTENT");
         
+        
         System.out.println("N_TITLE_modCon = " + N_TITLE);
         System.out.println("N_CONTENT_modCon = " + N_CONTENT);
-
+        
+        
+        
         //updateSavedFile배열 형변환
         String[] updateSavedFile = new String[3];
         
@@ -169,7 +172,7 @@ public class mod_notice_write extends HttpServlet {
         }
         
         Enumeration files = multi.getFileNames();
-                   
+        
         while(files.hasMoreElements()) {
             
             System.out.println("일루왓~!");

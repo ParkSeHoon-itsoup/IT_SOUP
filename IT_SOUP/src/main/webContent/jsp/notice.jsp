@@ -67,13 +67,11 @@
      } 
 </style>
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
-<script>
-function change(){
-    
-    alert("호옹이~");
-    background-color:red;
-}
-</script>
+<!-- <script> -->
+<!-- // function change(){ -->
+<!-- //     background-color:red; -->
+<!-- // } -->
+<!-- </script> -->
 </head>
 <body> 
     <%
